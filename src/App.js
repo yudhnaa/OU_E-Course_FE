@@ -1,25 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import "./App.css";
+import Home from "./pages/Home";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Footer from "./components/Footer";
+import { AppContextProvider } from "./contexts/AppContext";
+import Navbar from "./components/Navbar";
+import CoursesList from "./pages/CoursesList";
+import MyEnrollments from "./pages/MyEnrollments";
+import SignIn from "./pages/SignIn";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	return (
+		<BrowserRouter>
+			<AppContextProvider>
+				{/* header */}
+				<Navbar />
+
+				<Routes>
+					<Route path="/" element={<Home />} />
+					<Route path="/course-list" element={<CoursesList />} />
+					<Route path="/my-enrollments" element={<MyEnrollments />} />
+					<Route path="/login" element={<SignIn />} />
+					<Route path="/signup" element={<SignIn />} />
+					<Route path="/forgot-password" element={<SignIn />} />
+					{/* <Route path="*" element={<Home />} /> */}
+				</Routes>
+
+				<Footer />
+			</AppContextProvider>
+		</BrowserRouter>
+	);
 }
 
 export default App;
