@@ -10,7 +10,7 @@ import MyEnrollments from "./pages/MyEnrollments";
 import LogIn from "./pages/LogIn";
 import "bootstrap/dist/css/bootstrap.min.css";
 import SignUp from "./pages/SignUp";
-import ProfilePage from "./pages/ProfilePage";
+import ProfilePage from "./pages/Profile";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 

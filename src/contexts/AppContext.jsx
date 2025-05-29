@@ -7,6 +7,7 @@ import {
 	USER_ACTIONS,
 } from "../reducers/userReducer";
 import Apis, { authApis, endpoints } from "../configs/Apis";
+import { toast } from "react-toastify";
 
 const AppContext = React.createContext();
 
@@ -37,29 +38,7 @@ const AppContextProvider = (props) => {
 				}
 			} else {
 				// Token exists but no user data, fetch user profile
-				getUserProfile()
-					.then((response) => {
-						if (response.status === 200) {
-							const user = response.data;
-							// Store user data in cookies
-							const expires = new Date();
-							expires.setDate(expires.getDate() + 1);
-							cookie.save("userData", JSON.stringify(user), {
-								path: "/",
-								expires,
-							});
-
-							userDispatch({
-								type: USER_ACTIONS.LOGIN,
-								payload: { user, token },
-							});
-						}
-					})
-					.catch((error) => {
-						// Token is invalid, clear it
-						cookie.remove("token", { path: "/" });
-						console.error("Failed to fetch user profile:", error);
-					});
+				getUserProfile();
 			}
 		}
 	}, []);
@@ -73,11 +52,43 @@ const AppContextProvider = (props) => {
 			return Promise.reject("User not authenticated");
 		}
 
-		return Apis.get(endpoints["profile"], {
+		const res = await Apis.get(endpoints["profile"], {
 			headers: {
 				Authorization: `Bearer ${token}`,
 			},
-		});
+		})
+			.then((response) => {
+				if (response.status === 200) {
+					const user = response.data;
+					// Store user data in cookies
+					const expires = new Date();
+					expires.setDate(expires.getDate() + 1);
+					cookie.save("userData", JSON.stringify(user), {
+						path: "/",
+						expires,
+					});
+
+					userDispatch({
+						type: USER_ACTIONS.LOGIN,
+						payload: { user, token },
+					});
+
+					return {
+						success: true,
+						message: "User profile fetched successfully",
+					};
+				}
+			})
+			.catch((error) => {
+				// Token is invalid, clear it
+				cookie.remove("token", { path: "/" });
+				console.error("Failed to fetch user profile:", error);
+
+				return {
+					success: false,
+					error: "Failed to fetch user profile",
+				};
+			});
 	};
 
 	const login = async (credentials) => {
@@ -200,6 +211,7 @@ const AppContextProvider = (props) => {
 		error,
 		// Auth functions
 		login,
+		getUserProfile,
 		logout,
 		clearError,
 	};

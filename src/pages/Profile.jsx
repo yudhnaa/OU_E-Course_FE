@@ -1,4 +1,4 @@
-import React, { useContext, useState, useRef } from "react";
+import React, { useContext, useState, useRef, useEffect } from "react";
 import {
 	Container,
 	Row,
@@ -17,7 +17,7 @@ import { toast } from "react-toastify";
 import Apis, { authApis, endpoints } from "../configs/Apis";
 
 const ProfilePage = () => {
-	const { user } = useContext(AppContext);
+	const { user, getUserProfile } = useContext(AppContext);
 	const [activeTab, setActiveTab] = useState("personal");
 	const [showAlert, setShowAlert] = useState({
 		show: false,
@@ -34,7 +34,6 @@ const ProfilePage = () => {
 		lastName: user?.userIdLastName || "",
 		email: user?.userIdEmail || "",
 		birthday: user?.userIdBirthday || "",
-		avatar: user?.userIdAvatar || assets.profile_img,
 	});
 
 	const [passwordData, setPasswordData] = useState({
@@ -45,6 +44,7 @@ const ProfilePage = () => {
 	const [profileImage, setProfileImage] = useState(
 		user?.userIdAvatar || assets.profile_img
 	);
+	const [profileImageFile, setProfileImageFile] = useState(null);
 
 	const handlePersonalDataChange = (e) => {
 		const { name, value } = e.target;
@@ -65,6 +65,9 @@ const ProfilePage = () => {
 	const handleImageUpload = (e) => {
 		const file = e.target.files[0];
 		if (file) {
+			setProfileImageFile(file);
+
+			// Create preview URL for display
 			const reader = new FileReader();
 			reader.onload = (e) => {
 				setProfileImage(e.target.result);
@@ -81,11 +84,12 @@ const ProfilePage = () => {
 
 		const res = await authApis().post(endpoints["updateProfile"], formData, {
 			headers: {
-				"Content-Type": "multipart/form-date",
+				"Content-Type": "multipart/form-data",
 			},
 		});
 
 		if (res.status === 200) {
+			getUserProfile();
 			return {
 				success: true,
 				message: "Profile updated successfully!",
@@ -104,11 +108,11 @@ const ProfilePage = () => {
 
 		try {
 			const result = await updatePersonalDetail({
-				userIdFirstName: user.userIdFirstName,
-				userIdLastName: user.userIdLastName,
-				userIdEmail: user.userIdEmail,
-				userIdBirthday: user.userIdBirthday,
-				userIdAvatar: user.userIdAvatar,
+				userIdFirstName: personalData.firstName,
+				userIdLastName: personalData.lastName,
+				userIdEmail: personalData.email,
+				userIdBirthday: personalData.birthday,
+				avatarFile: profileImageFile,
 			});
 
 			if (result.success) {
@@ -118,13 +122,15 @@ const ProfilePage = () => {
 					pauseOnHover: true,
 				});
 
-				setPersonalData({
-					firstName: personalData.firstName,
-					lastName: personalData.lastName,
-					email: personalData.email,
-					birthday: personalData.birthday,
-					avatar: profileImage,
-				});
+				// setPersonalData({
+				// 	firstName: personalData.firstName,
+				// 	lastName: personalData.lastName,
+				// 	email: personalData.email,
+				// 	birthday: personalData.birthday,
+				// 	avatar: profileImage,
+				// });
+
+				setProfileImageFile(null);
 			} else {
 				setShowAlert({
 					show: true,
@@ -143,6 +149,23 @@ const ProfilePage = () => {
 		}
 	};
 
+	const changePassword = async (data) => {
+		const res = await authApis().post(endpoints["changePassword"], {
+			newPassword: data.newPassword,
+		});
+		if (res.status === 200) {
+			return {
+				success: true,
+				message: "Password changed successfully!",
+			};
+		} else {
+			return {
+				success: false,
+				message: res.data.message || "Failed to change password.",
+			};
+		}
+	};
+
 	const handlePasswordSubmit = async (e) => {
 		e.preventDefault();
 
@@ -155,11 +178,11 @@ const ProfilePage = () => {
 			return;
 		}
 
-		if (passwordData.newPassword.length < 6) {
+		if (passwordData.newPassword.length < 3) {
 			setShowAlert({
 				show: true,
 				type: "danger",
-				message: "Password must be at least 6 characters long!",
+				message: "Password must be at least 3 characters long!",
 			});
 			return;
 		}
@@ -167,8 +190,9 @@ const ProfilePage = () => {
 		setIsLoading(true);
 
 		try {
-			// Here you would call your API to change password
-			// await changePassword(passwordData);
+			const result = await changePassword({
+				newPassword: passwordData.newPassword,
+			});
 
 			setShowAlert({
 				show: true,
@@ -191,6 +215,20 @@ const ProfilePage = () => {
 			setIsLoading(false);
 		}
 	};
+
+	// Load user data when component mounts
+	useEffect(() => {
+		if (user) {
+			setPersonalData({
+				firstName: user.userIdFirstName || "",
+				lastName: user.userIdLastName || "",
+				email: user.userIdEmail || "",
+				birthday: user.userIdBirthday || "",
+			});
+			setProfileImage(user.userIdAvatar || assets.profile_img);
+			setProfileImageFile(null);
+		}
+	}, [user]);
 
 	return (
 		<div className="profile-page">
@@ -327,7 +365,7 @@ const ProfilePage = () => {
 														</Form.Label>
 														<Form.Control
 															type="text"
-															value={user?.username || ""}
+															value={user?.userIdUsername || ""}
 															placeholder="Username"
 															readOnly
 															className="bg-light"
@@ -402,7 +440,7 @@ const ProfilePage = () => {
 															onChange={handlePasswordChange}
 															placeholder="Enter new password"
 															required
-															minLength={6}
+															minLength={3}
 														/>
 													</Form.Group>
 												</Col>
@@ -418,7 +456,7 @@ const ProfilePage = () => {
 															onChange={handlePasswordChange}
 															placeholder="Confirm password"
 															required
-															minLength={6}
+															minLength={3}
 														/>
 													</Form.Group>
 												</Col>
