@@ -118,49 +118,54 @@ const Player = ({}) => {
 	useEffect(() => {
 		getCourseProgress();
 	}, []);
-
 	return courseData ? (
 		<>
-			<div className="p-4 sm:p-10 flex flex-col-reverse md:grid md:grid-cols-2 gap-10 md:px-36">
-				<div className=" text-gray-800">
-					<h2 className="text-xl font-semibold">Course Structure</h2>
-					<div className="pt-5">
+			<div className="p-3 p-sm-4 d-flex flex-column flex-md-row gap-4 px-md-5">
+				<div className="text-dark flex-fill">
+					<h2 className="h5 fw-semibold">Course Structure</h2>
+					<div className="pt-3">
 						{courseData &&
 							courseData.courseContent.map((chapter, index) => (
 								<div
 									key={index}
-									className="border border-gray-300 bg-white mb-2 rounded"
+									className="border border-light bg-white mb-2 rounded"
 								>
 									<div
-										className="flex items-center justify-between px-4 py-3 cursor-pointer select-none"
+										className="d-flex align-items-center justify-content-between px-3 py-3 user-select-none"
 										onClick={() => toggleSection(index)}
+										style={{ cursor: "pointer" }}
 									>
-										<div className="flex items-center gap-2">
+										<div className="d-flex align-items-center gap-2">
 											<img
 												src={assets.down_arrow_icon}
 												alt="arrow icon"
-												className={`transform transition-transform ${
-													openSections[index] ? "rotate-180" : ""
-												}`}
+												className="transition"
+												style={{
+													transform: openSections[index]
+														? "rotate(180deg)"
+														: "rotate(0deg)",
+													transition: "transform 0.3s ease",
+												}}
 											/>
-											<p className="font-medium md:text-base text-sm">
-												{chapter.chapterTitle}
-											</p>
+											<p className="fw-medium mb-0">{chapter.chapterTitle}</p>
 										</div>
-										<p className="text-sm md:text-default">
+										<p className="small mb-0">
 											{chapter.chapterContent.length} lectures -{" "}
 											{calculateChapterTime(chapter)}
 										</p>
 									</div>
 
 									<div
-										className={`overflow-hidden transition-all duration-300 ${
-											openSections[index] ? "max-h-96" : "max-h-0"
+										className={`overflow-hidden ${
+											openSections[index] ? "" : "d-none"
 										}`}
 									>
-										<ul className="list-disc md:pl-10 pl-4 pr-4 py-2 text-gray-600 border-t border-gray-300">
+										<ul className="list-unstyled ps-4 pe-3 py-2 text-muted border-top border-light mb-0">
 											{chapter.chapterContent.map((lecture, i) => (
-												<li key={i} className="flex items-start gap-2 py-1">
+												<li
+													key={i}
+													className="d-flex align-items-start gap-2 py-1"
+												>
 													<img
 														src={
 															progressData &&
@@ -171,11 +176,15 @@ const Player = ({}) => {
 																: assets.play_icon
 														}
 														alt="bullet icon"
-														className="w-4 h-4 mt-1"
+														style={{
+															width: "16px",
+															height: "16px",
+															marginTop: "2px",
+														}}
 													/>
-													<div className="flex items-center justify-between w-full text-gray-800 text-xs md:text-default">
-														<p>{lecture.lectureTitle}</p>
-														<div className="flex gap-2">
+													<div className="d-flex align-items-center justify-content-between w-100 text-dark small">
+														<p className="mb-0">{lecture.lectureTitle}</p>
+														<div className="d-flex gap-2">
 															{lecture.lectureUrl && (
 																<p
 																	onClick={() =>
@@ -185,12 +194,13 @@ const Player = ({}) => {
 																			lecture: i + 1,
 																		})
 																	}
-																	className="text-blue-500 cursor-pointer"
+																	className="text-primary mb-0"
+																	style={{ cursor: "pointer" }}
 																>
 																	Watch
 																</p>
 															)}
-															<p>
+															<p className="mb-0">
 																{humanizeDuration(
 																	lecture.lectureDuration * 60 * 1000,
 																	{ units: ["h", "m"] }
@@ -206,27 +216,28 @@ const Player = ({}) => {
 							))}
 					</div>
 
-					<div className=" flex items-center gap-2 py-3 mt-10">
-						<h1 className="text-xl font-bold">Rate this Course:</h1>
+					<div className="d-flex align-items-center gap-2 py-3 mt-4">
+						<h1 className="h5 fw-bold mb-0">Rate this Course:</h1>
 						<Rating initialRating={initialRating} onRate={handleRate} />
 					</div>
 				</div>
 
-				<div className="md:mt-10">
+				<div className="mt-3 mt-md-4 flex-fill">
 					{playerData ? (
 						<div>
 							<YouTube
-								iframeClassName="w-full aspect-video"
+								iframeClassName="w-100"
+								style={{ aspectRatio: "16/9" }}
 								videoId={playerData.lectureUrl.split("/").pop()}
 							/>
-							<div className="flex justify-between items-center mt-1">
-								<p className="text-xl ">
+							<div className="d-flex justify-content-between align-items-center mt-2">
+								<p className="h5 mb-0">
 									{playerData.chapter}.{playerData.lecture}{" "}
 									{playerData.lectureTitle}
 								</p>
 								<button
 									onClick={() => markLectureAsCompleted(playerData.lectureId)}
-									className="text-blue-600"
+									className="btn btn-link text-primary p-0"
 								>
 									{progressData &&
 									progressData.lectureCompleted.includes(playerData.lectureId)
@@ -236,7 +247,11 @@ const Player = ({}) => {
 							</div>
 						</div>
 					) : (
-						<img src={courseData ? courseData.courseThumbnail : ""} alt="" />
+						<img
+							src={courseData ? courseData.courseThumbnail : ""}
+							alt=""
+							className="w-100 rounded"
+						/>
 					)}
 				</div>
 			</div>

@@ -14,24 +14,24 @@ const CourseCard = ({ course }) => {
 		);
 		return totalRating / course.courseRatings.length;
 	};
-
 	return (
 		<Link
 			onClick={() => window.scrollTo(0, 0)}
 			to={"/course/" + course._id}
-			className="border border-gray-500/30 pb-6 overflow-hidden rounded-lg"
+			className="card border text-decoration-none overflow-hidden rounded"
+			style={{ paddingBottom: "24px" }}
 		>
-			<img className="w-full" src={course.courseThumbnail} alt="" />
-			<div className="p-3 text-left">
-				<h3 className="text-base font-semibold">{course.courseTitle}</h3>
-				{/* <p className="text-gray-500">{course.educator.name}</p> */}
-				<div className="flex items-center space-x-2">
-					<p>{calculateRating(course)}</p>
-					<div className="flex">
+			<img className="card-img-top w-100" src={course.courseThumbnail} alt="" />
+			<div className="card-body p-3 text-start">
+				<h3 className="card-title fs-6 fw-semibold">{course.courseTitle}</h3>
+				{/* <p className="text-muted">{course.educator.name}</p> */}
+				<div className="d-flex align-items-center gap-2">
+					<span>{calculateRating(course)}</span>
+					<div className="d-flex">
 						{[...Array(5)].map((_, i) => (
 							<img
 								key={i}
-								className="w-3.5 h-3.5"
+								style={{ width: "14px", height: "14px" }}
 								src={
 									i < Math.floor(calculateRating(course))
 										? assets.star
@@ -41,9 +41,9 @@ const CourseCard = ({ course }) => {
 							/>
 						))}
 					</div>
-					<p className="text-gray-500">({course.courseRatings.length})</p>
+					<span className="text-muted">({course.courseRatings.length})</span>
 				</div>
-				<p className="text-base font-semibold text-gray-800">
+				<p className="fs-6 fw-semibold text-dark">
 					{currency}
 					{(
 						course.coursePrice -

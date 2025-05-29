@@ -3,24 +3,39 @@ import { assets } from "../assets/assets";
 
 const Companies = () => {
 	return (
-		<div className="pt-16">
-			<p className="text-base text-gray-500 text-center">
-				Trusted by learners from
-			</p>
-			<div className="flex flex-wrap items-center justify-center gap-6 md:gap-16 md:mt-10 mt-5">
+		<div className="pt-5">
+			<p className="text-muted text-center mb-4">Trusted by learners from</p>
+			<div className="d-flex flex-wrap align-items-center justify-content-center gap-4 gap-md-5">
 				<img
-					className="md:w-28 w-20"
+					className="img-fluid"
+					style={{ width: "80px", maxWidth: "112px" }}
 					src={assets.microsoft_logo}
 					alt="Microsoft"
 				/>
-				<img className="md:w-28 w-20" src={assets.walmart_logo} alt="Walmart" />
 				<img
-					className="md:w-24 w-20"
+					className="img-fluid"
+					style={{ width: "80px", maxWidth: "112px" }}
+					src={assets.walmart_logo}
+					alt="Walmart"
+				/>
+				<img
+					className="img-fluid"
+					style={{ width: "80px", maxWidth: "96px" }}
 					src={assets.accenture_logo}
 					alt="Accenture"
 				/>
-				<img className="md:w-24 w-20" src={assets.adobe_logo} alt="Adobe" />
-				<img className="md:w-24 w-20" src={assets.paypal_logo} alt="Paypal" />
+				<img
+					className="img-fluid"
+					style={{ width: "80px", maxWidth: "96px" }}
+					src={assets.adobe_logo}
+					alt="Adobe"
+				/>
+				<img
+					className="img-fluid"
+					style={{ width: "80px", maxWidth: "96px" }}
+					src={assets.paypal_logo}
+					alt="Paypal"
+				/>
 			</div>
 		</div>
 	);

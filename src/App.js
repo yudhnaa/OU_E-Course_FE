@@ -8,6 +8,7 @@ import Navbar from "./components/Navbar";
 import CoursesList from "./pages/CoursesList";
 import MyEnrollments from "./pages/MyEnrollments";
 import SignIn from "./pages/SignIn";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
 	return (

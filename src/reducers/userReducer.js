@@ -10,7 +10,7 @@ export const USER_ACTIONS = {
 export const initialUserState = {
 	user: null,
 	isAuthenticated: false,
-	token: cookie.load("token") || null,
+	token: null,
 };
 
 // User reducer

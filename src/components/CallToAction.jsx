@@ -3,21 +3,23 @@ import { assets } from "../assets/assets";
 
 const CallToAction = () => {
 	return (
-		<div className="flex flex-col items-center gap-4 pt-10 pb-24 px-8 md:px-0">
-			<h1 className="md:text-4xl text-xl text-gray-800 font-semibold">
+		<div className="d-flex flex-column align-items-center gap-4 pt-4 pb-5 px-3 px-md-0">
+			<h1 className="h1 text-dark fw-semibold text-center">
 				Learn anything, anytime, anywhere
 			</h1>
-			<p className="text-gray-500 sm:text-sm">
+			<p className="text-muted text-center">
 				Incididunt sint fugiat pariatur cupidatat consectetur sit cillum anim id
 				veniam aliqua proident excepteur commodo do ea.
 			</p>
-			<div className="flex items-center font-medium gap-6 mt-4">
-				<button className="px-10 py-3 rounded-md text-white bg-blue-600">
-					Get started
-				</button>
-				<button className="flex items-center gap-2">
+			<div className="d-flex align-items-center fw-medium gap-3 mt-3">
+				<button className="btn btn-primary px-4 py-2">Get started</button>
+				<button className="btn btn-link d-flex align-items-center gap-2 text-decoration-none">
 					Learn more
-					<img src={assets.arrow_icon} alt="arrow_icon" />
+					<img
+						src={assets.arrow_icon}
+						alt="arrow_icon"
+						style={{ width: "16px", height: "16px" }}
+					/>
 				</button>
 			</div>
 		</div>
