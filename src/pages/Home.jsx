@@ -6,12 +6,26 @@ import TestimonialsSection from "../components/TestimonialsSection";
 
 const Home = () => {
 	return (
-		<div className="flex flex-col items-center space-y-7 text-center">
+		<div
+			className="d-flex flex-column align-items-center text-center"
+			style={{
+				background:
+					"linear-gradient(to bottom, rgba(13, 202, 240, 0.25), white)",
+			}}
+		>
 			<Hero />
-			<Companies />
-			<CoursesSection />
-			<TestimonialsSection />
-			<CallToAction />
+			<div className="py-4">
+				<Companies />
+			</div>
+			<div className="py-4">
+				<CoursesSection />
+			</div>
+			<div className="py-4">
+				<TestimonialsSection />
+			</div>
+			<div className="py-4">
+				<CallToAction />
+			</div>
 		</div>
 	);
 };

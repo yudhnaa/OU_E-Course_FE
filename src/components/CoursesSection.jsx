@@ -43,26 +43,25 @@ const CoursesSection = () => {
 			discount: 5,
 		},
 	];
-
 	return (
-		<div className="py-16 md:px-40 px-8">
-			<h2 className="text-3xl font-medium text-gray-800">
-				Learn from the best
-			</h2>
-			<p className="md:text-base text-sm text-gray-500 mt-3">
+		<div className="py-5 px-3 px-md-5">
+			<h2 className="h2 fw-medium text-dark">Learn from the best</h2>
+			<p className="text-muted mt-3">
 				Discover our top-rated courses across various categories. From coding
 				and design to business and wellness, our courses are crafted to deliver
 				results.
 			</p>
-			<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 px-4 md:px-0 md:my-16 my-10 gap-4">
+			<div className="row g-4 my-4 my-md-5">
 				{allCourses.slice(0, 4).map((course, index) => (
-					<CourseCard key={index} course={course} />
+					<div key={index} className="col-12 col-sm-6 col-md-4 col-lg-3">
+						<CourseCard course={course} />
+					</div>
 				))}
 			</div>
 			<Link
 				to={"/course-list"}
 				onClick={() => window.scrollTo(0, 0)}
-				className="text-gray-500 border border-gray-500/30 px-10 py-3 rounded"
+				className="btn btn-outline-secondary px-4 py-2"
 			>
 				Show all courses
 			</Link>

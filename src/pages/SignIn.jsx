@@ -47,20 +47,19 @@ export default function SignIn() {
 		password: "",
 	});
 
-	// // Quote carousel effect
-	useEffect(() => {
-		const timer = setInterval(() => {
-			setCurrentQuote((prev) => (prev + 1) % quotes.length);
-		}, 4000);
-		return () => clearInterval(timer);
-	}, []);
-
 	// Redirect if already authenticated
 	useEffect(() => {
 		if (isAuthenticated) {
 			navigate("/");
 		}
 	}, [isAuthenticated, navigate]);
+
+	useEffect(() => {
+		const timer = setInterval(() => {
+			setCurrentQuote((prev) => (prev + 1) % quotes.length);
+		}, 4000);
+		return () => clearInterval(timer);
+	}, []);
 
 	// Clear errors when component mounts
 	useEffect(() => {
@@ -86,63 +85,129 @@ export default function SignIn() {
 	};
 
 	const handleSocialLogin = (provider) => {
-		// chua implement kip
-		console.log(`Login with ${provider}`);
+		console.warn(`Social login not implemented: ${provider}`);
 	};
 
 	return (
-		<div className="min-h-screen flex items-center justify-center py-8 px-4 relative bg-gradient-to-br from-green-50 via-emerald-50 to-teal-100">
+		<div className="min-vh-100 d-flex align-items-center justify-content-center py-4 px-3 position-relative bg-success bg-opacity-10">
 			{/* Animated background elements */}
-			<div className="absolute inset-0 overflow-hidden pointer-events-none">
-				<div className="absolute -top-40 -right-40 w-80 h-80 bg-green-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-				<div className="absolute -bottom-40 -left-40 w-80 h-80 bg-emerald-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-				<div className="absolute top-40 left-40 w-80 h-80 bg-teal-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
+			<div
+				className="position-absolute w-100 h-100 overflow-hidden"
+				style={{ pointerEvents: "none" }}
+			>
+				<div
+					className="position-absolute bg-success bg-opacity-25 rounded-circle"
+					style={{
+						top: "-160px",
+						right: "-160px",
+						width: "320px",
+						height: "320px",
+						filter: "blur(40px)",
+						opacity: "0.7",
+					}}
+				></div>
+				<div
+					className="position-absolute bg-success bg-opacity-25 rounded-circle"
+					style={{
+						bottom: "-160px",
+						left: "-160px",
+						width: "320px",
+						height: "320px",
+						filter: "blur(40px)",
+						opacity: "0.7",
+					}}
+				></div>
+				<div
+					className="position-absolute bg-info bg-opacity-25 rounded-circle"
+					style={{
+						top: "160px",
+						left: "160px",
+						width: "320px",
+						height: "320px",
+						filter: "blur(40px)",
+						opacity: "0.7",
+					}}
+				></div>
 			</div>
 
-			<div className="relative max-w-6xl w-full bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl overflow-hidden flex flex-col lg:flex-row border border-white/20">
+			<div
+				className="position-relative w-100 bg-white bg-opacity-90 rounded-4 shadow-lg overflow-hidden d-flex flex-column flex-lg-row border border-light"
+				style={{ maxWidth: "1152px", backdropFilter: "blur(8px)" }}
+			>
 				{/* Left side with logo and quotes */}
-				<div className="lg:w-1/2 p-8 lg:p-12 bg-gradient-to-br from-green-600 to-emerald-700 text-white relative flex flex-col min-h-[500px]">
+				<div
+					className="col-lg-6 p-4 p-lg-5 text-white position-relative d-flex flex-column"
+					style={{
+						minHeight: "500px",
+						background: "linear-gradient(135deg, #16a085, #27ae60)",
+					}}
+				>
 					{/* Decorative elements */}
-					<div className="absolute inset-0 bg-gradient-to-br from-green-800/20 to-transparent"></div>
-					<div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
-					<div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-12 -translate-x-12"></div>
+					<div className="position-absolute w-100 h-100"></div>
+					<div
+						className="position-absolute bg-white bg-opacity-10 rounded-circle"
+						style={{
+							top: "0",
+							right: "0",
+							width: "128px",
+							height: "128px",
+							transform: "translate(64px, -64px)",
+						}}
+					></div>
+					<div
+						className="position-absolute bg-white bg-opacity-10 rounded-circle"
+						style={{
+							bottom: "0",
+							left: "0",
+							width: "96px",
+							height: "96px",
+							transform: "translate(-48px, 48px)",
+						}}
+					></div>
 
-					<div className="relative z-10">
-						<Link to="/" className="mb-8 inline-block group">
-							<div className="flex items-center space-x-3">
-								<div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center group-hover:bg-white/30 transition-colors">
-									<span className="text-xl font-bold">E</span>
+					<div className="position-relative" style={{ zIndex: 10 }}>
+						<Link to="/" className="mb-4 d-inline-block text-decoration-none">
+							<div className="d-flex align-items-center gap-3">
+								<div
+									className="bg-white bg-opacity-20 rounded-3 d-flex align-items-center justify-content-center transition"
+									style={{ width: "40px", height: "40px" }}
+								>
+									<span className="fs-4 fw-bold text-dark">E</span>
 								</div>
-								<span className="text-xl font-bold">E-Course</span>
+								<span className="fs-4 fw-bold text-white">E-Course</span>
 							</div>
 						</Link>
 
-						<div className="flex-grow flex flex-col justify-center">
-							<div className="mb-6 text-5xl leading-none">
-								<i className="ri-double-quotes-l text-green-300 opacity-80"></i>
+						<div className="flex-fill d-flex flex-column justify-content-center">
+							<div className="mb-4 display-1 lh-1">
+								<i className="ri-double-quotes-l text-success text-opacity-75"></i>
 							</div>
 
-							<div className="min-h-[120px] flex flex-col justify-center">
-								<blockquote className="text-lg lg:text-xl leading-relaxed italic mb-4 transform transition-all duration-500">
+							<div
+								className="d-flex flex-column justify-content-center"
+								style={{ minHeight: "120px" }}
+							>
+								<blockquote className="fs-5 fs-lg-4 fst-italic mb-3 transition">
 									{quotes[currentQuote].text}
 								</blockquote>
-								<cite className="text-green-200 text-sm font-medium">
+								<cite className="text-success text-opacity-75 small fw-medium text-dark">
 									— {quotes[currentQuote].author}
 								</cite>
 							</div>
 
 							{/* Carousel indicators */}
-							<div className="flex justify-center mt-8 space-x-3">
+							<div className="d-flex justify-content-center mt-4 gap-3">
 								{quotes.map((_, idx) => (
 									<button
 										key={idx}
 										onClick={() => setCurrentQuote(idx)}
 										aria-label={`Slide ${idx + 1}`}
-										className={`w-3 h-3 rounded-full transition-all duration-300 ${
+										className={`rounded-circle border-0 transition ${
 											idx === currentQuote
-												? "bg-white scale-125"
-												: "bg-white/50 hover:bg-white/75"
+												? "bg-white"
+												: "bg-white bg-opacity-50"
 										}`}
+										style={{ width: "12px", height: "12px" }}
 									/>
 								))}
 							</div>
@@ -151,38 +216,38 @@ export default function SignIn() {
 				</div>
 
 				{/* Right side with form */}
-				<div className="lg:w-1/2 p-8 lg:p-12">
-					<div className="max-w-md mx-auto">
-						<div className="text-center mb-8">
-							<h1 className="text-3xl font-bold text-gray-900 mb-2">
+				<div className="col-lg-6 p-4 p-lg-5">
+					<div className="mx-auto" style={{ maxWidth: "448px" }}>
+						<div className="text-center mb-4">
+							<h1 className="display-6 fw-bold text-dark mb-2">
 								Welcome Back!
 							</h1>
-							<p className="text-gray-600">
+							<p className="text-muted">
 								Sign in to continue your learning journey
 							</p>
 						</div>
 
 						{/* Error Alert */}
 						{error && (
-							<div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center space-x-3">
-								<div className="w-5 h-5 text-red-500">⚠️</div>
-								<div className="text-red-700 text-sm">{error}</div>
+							<div
+								className="alert alert-danger d-flex align-items-center mb-4"
+								role="alert"
+							>
+								<div className="me-2">⚠️</div>
+								<div className="flex-fill">{error}</div>
 								<button
+									type="button"
+									className="btn-close"
 									onClick={clearError}
-									className="ml-auto text-red-500 hover:text-red-700"
-								>
-									×
-								</button>
+									aria-label="Close"
+								></button>
 							</div>
 						)}
 
-						<form onSubmit={handleSubmit} className="space-y-6">
+						<form onSubmit={handleSubmit}>
 							{/* Username Field */}
-							<div>
-								<label
-									htmlFor="username"
-									className="block mb-2 text-sm font-medium text-gray-700"
-								>
+							<div className="mb-3">
+								<label htmlFor="username" className="form-label fw-medium">
 									Username
 								</label>
 								<input
@@ -193,35 +258,30 @@ export default function SignIn() {
 									onChange={handleChange}
 									onBlur={handleBlur}
 									placeholder="Enter your username"
-									className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${
-										errors.username && touched.username
-											? "border-red-300 focus:ring-red-500"
-											: "border-gray-300 focus:ring-green-500 focus:border-green-500"
+									className={`form-control ${
+										errors.username && touched.username ? "is-invalid" : ""
 									}`}
 									disabled={isLoading}
 								/>
 								{errors.username && touched.username && (
-									<p className="mt-1 text-sm text-red-600">{errors.username}</p>
+									<div className="invalid-feedback">{errors.username}</div>
 								)}
 							</div>
 
 							{/* Password Field */}
-							<div>
-								<div className="flex justify-between items-center mb-2">
-									<label
-										htmlFor="password"
-										className="text-sm font-medium text-gray-700"
-									>
+							<div className="mb-3">
+								<div className="d-flex justify-content-between align-items-center mb-2">
+									<label htmlFor="password" className="form-label fw-medium">
 										Password
 									</label>
 									<Link
 										to="/forgot-password"
-										className="text-sm text-green-600 hover:text-green-700 hover:underline transition-colors"
+										className="small text-success text-decoration-none"
 									>
 										Forgot password?
 									</Link>
 								</div>
-								<div className="relative">
+								<div className="position-relative">
 									<input
 										type={showPassword ? "text" : "password"}
 										id="password"
@@ -230,17 +290,17 @@ export default function SignIn() {
 										onChange={handleChange}
 										onBlur={handleBlur}
 										placeholder="Enter your password"
-										className={`w-full px-4 py-3 pr-12 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${
-											errors.password && touched.password
-												? "border-red-300 focus:ring-red-500"
-												: "border-gray-300 focus:ring-green-500 focus:border-green-500"
+										className={`form-control ${
+											errors.password && touched.password ? "is-invalid" : ""
 										}`}
+										style={{ paddingRight: "3rem" }}
 										disabled={isLoading}
 									/>
 									<button
 										type="button"
 										onClick={() => setShowPassword(!showPassword)}
-										className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-green-600 transition-colors"
+										className="btn position-absolute top-50 end-0 translate-middle-y me-2 text-muted"
+										style={{ border: "none", background: "none", zIndex: 10 }}
 										aria-label="Toggle password visibility"
 									>
 										{showPassword ? (
@@ -251,35 +311,48 @@ export default function SignIn() {
 									</button>
 								</div>
 								{errors.password && touched.password && (
-									<p className="mt-1 text-sm text-red-600">{errors.password}</p>
+									<div className="invalid-feedback">{errors.password}</div>
 								)}
 							</div>
 
 							{/* Remember Me */}
-							<div className="flex items-center justify-between">
-								<label className="flex items-center space-x-3 cursor-pointer">
+							<div className="mb-4">
+								<div className="form-check">
 									<input
 										type="checkbox"
 										checked={rememberMe}
 										onChange={(e) => setRememberMe(e.target.checked)}
-										className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+										className="form-check-input"
+										id="rememberMe"
 										disabled={isLoading}
 									/>
-									<span className="text-sm text-gray-700 select-none">
+									<label
+										className="form-check-label user-select-none"
+										htmlFor="rememberMe"
+									>
 										Remember me
-									</span>
-								</label>
+									</label>
+								</div>
 							</div>
 
 							{/* Submit Button */}
 							<button
 								type="submit"
 								disabled={isLoading}
-								className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 disabled:from-gray-400 disabled:to-gray-500 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-[1.02] disabled:scale-100 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
+								className="btn btn-success w-100 py-3 fw-semibold shadow"
+								style={{
+									background: "linear-gradient(135deg, #198754, #20c997)",
+									border: "none",
+								}}
 							>
 								{isLoading ? (
-									<div className="flex items-center justify-center space-x-2">
-										<div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+									<div className="d-flex align-items-center justify-content-center gap-2">
+										<div
+											className="spinner-border spinner-border-sm text-light"
+											role="status"
+										>
+											<span className="visually-hidden">Loading...</span>
+										</div>
 										<span>Signing In...</span>
 									</div>
 								) : (
@@ -289,62 +362,60 @@ export default function SignIn() {
 						</form>
 
 						{/* Social Login */}
-						<div className="mt-8">
-							<div className="relative">
-								<div className="absolute inset-0 flex items-center">
-									<div className="w-full border-t border-gray-300"></div>
-								</div>
-								<div className="relative flex justify-center text-sm">
-									<span className="px-4 bg-white text-gray-500">
-										Or continue with
-									</span>
+						<div className="mt-4">
+							<div className="position-relative my-4">
+								<hr className="text-muted" />
+								<div className="position-absolute top-50 start-50 translate-middle bg-white px-3">
+									<span className="small text-muted">Or continue with</span>
 								</div>
 							</div>
 
-							<div className="mt-6 grid grid-cols-4 gap-3">
+							<div className="row g-2 mt-3">
 								{[
 									{
 										icon: FaGoogle,
 										name: "Google",
-										color: "bg-red-500 hover:bg-red-600",
+										color: "btn-danger",
 									},
 									{
 										icon: FaFacebookF,
 										name: "Facebook",
-										color: "bg-blue-600 hover:bg-blue-700",
+										color: "btn-primary",
 									},
 									{
 										icon: FaGithub,
 										name: "GitHub",
-										color: "bg-gray-900 hover:bg-gray-800",
+										color: "btn-dark",
 									},
 									{
 										icon: FaTwitter,
 										name: "Twitter",
-										color: "bg-sky-500 hover:bg-sky-600",
+										color: "btn-info",
 									},
 								].map(({ icon: Icon, name, color }) => (
-									<button
-										key={name}
-										type="button"
-										onClick={() => handleSocialLogin(name.toLowerCase())}
-										className={`${color} p-3 rounded-lg text-white transition-all duration-200 transform hover:scale-105 flex items-center justify-center shadow-md hover:shadow-lg`}
-										aria-label={`Sign in with ${name}`}
-										disabled={isLoading}
-									>
-										<Icon size={18} />
-									</button>
+									<div key={name} className="col-3">
+										<button
+											type="button"
+											onClick={() => handleSocialLogin(name.toLowerCase())}
+											className={`btn ${color} w-100 d-flex align-items-center justify-content-center`}
+											style={{ aspectRatio: "2.5" }}
+											aria-label={`Sign in with ${name}`}
+											disabled={isLoading}
+										>
+											<Icon size={18} />
+										</button>
+									</div>
 								))}
 							</div>
 						</div>
 
 						{/* Sign Up Link */}
-						<div className="mt-8 text-center">
-							<p className="text-gray-600">
+						<div className="mt-4 text-center">
+							<p className="text-muted mb-0">
 								Don't have an account?{" "}
 								<Link
 									to="/signup"
-									className="font-semibold text-green-600 hover:text-green-700 hover:underline transition-colors"
+									className="fw-semibold text-success text-decoration-none"
 								>
 									Create Account
 								</Link>

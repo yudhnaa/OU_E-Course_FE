@@ -64,19 +64,19 @@ const CoursesList = () => {
 				: setFilteredCourse(tempCourses);
 		}
 	}, [allCourses, input]);
-
 	return (
 		<>
-			<div className="relative md:px-36 px-8 pt-20 text-left">
-				<div className="flex md:flex-row flex-col gap-6 items-start justify-between w-full">
+			<div
+				className="position-relative px-4 px-md-5 pt-5 text-start"
+				style={{ paddingLeft: "144px", paddingRight: "144px" }}
+			>
+				<div className="d-flex flex-column flex-md-row gap-4 align-items-start justify-content-between w-100">
 					<div>
-						<h1 className="text-4xl font-semibold text-gray-800">
-							Course List
-						</h1>
-						<p className="text-gray-500">
+						<h1 className="display-5 fw-semibold text-dark">Course List</h1>
+						<p className="text-muted">
 							<span
 								onClick={() => navigate("/")}
-								className="text-blue-600 cursor-pointer"
+								className="text-primary cursor-pointer text-decoration-none"
 							>
 								Home
 							</span>{" "}
@@ -86,8 +86,8 @@ const CoursesList = () => {
 					<SearchBar data={input} />
 				</div>
 				{input && (
-					<div className="inline-flex items-center gap-4 px-4 py-2 border mt-8 -mb-8 text-gray-600">
-						<p>{input}</p>
+					<div className="d-inline-flex align-items-center gap-3 px-3 py-2 border mt-4 mb-n4 text-muted">
+						<p className="mb-0">{input}</p>
 						<img
 							onClick={() => navigate("/course-list")}
 							className="cursor-pointer"
@@ -96,9 +96,11 @@ const CoursesList = () => {
 						/>
 					</div>
 				)}
-				<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 my-16 gap-3 px-2 md:p-0">
+				<div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 my-5 g-3 px-2 px-md-0">
 					{filteredCourse.map((course, index) => (
-						<CourseCard key={index} course={course} />
+						<div key={index} className="col">
+							<CourseCard course={course} />
+						</div>
 					))}
 				</div>
 			</div>

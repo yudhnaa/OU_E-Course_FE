@@ -3,55 +3,82 @@ import { assets } from "../assets/assets";
 
 const Footer = () => {
 	return (
-		<footer className="bg-gray-900 md:px-36 text-left w-full mt-10">
-			<div className="flex flex-col md:flex-row items-start px-8 md:px-0 justify-center gap-10 md:gap-32 py-10 border-b border-white/30">
-				<div className="flex flex-col md:items-start items-center w-full">
+		<footer
+			className="bg-dark text-start w-100"
+			style={{ paddingLeft: "144px", paddingRight: "144px" }}
+		>
+			<div className="d-flex flex-column flex-md-row align-items-start px-4 px-md-0 justify-content-center gap-4 gap-md-5 py-5 border-bottom border-light border-opacity-25">
+				<div className="d-flex flex-column align-items-center align-items-md-start w-100">
 					<img src={assets.logo_dark} alt="logo" />
-					<p className="mt-6 text-center md:text-left text-sm text-white/80">
+					<p className="mt-4 text-center text-md-start small text-light text-opacity-75">
 						Lorem Ipsum is simply dummy text of the printing and typesetting
 						industry. Lorem Ipsum has been the industry's standard dummy text.
 					</p>
 				</div>
 
-				<div className="flex flex-col md:items-start items-center w-full">
-					<h2 className="font-semibold text-white mb-5">Company</h2>
-					<ul className="flex md:flex-col w-full justify-between text-sm text-white/80 md:space-y-2">
+				<div className="d-flex flex-column align-items-center align-items-md-start w-100">
+					<h2 className="fw-semibold text-light mb-3">Company</h2>
+					<ul className="d-flex d-md-flex flex-md-column w-100 justify-content-between small text-light text-opacity-75 list-unstyled gap-md-2">
 						<li>
-							<a href="#">Home</a>
+							<a
+								href="#"
+								className="text-decoration-none text-light text-opacity-75"
+							>
+								Home
+							</a>
 						</li>
 						<li>
-							<a href="#">About us</a>
+							<a
+								href="#"
+								className="text-decoration-none text-light text-opacity-75"
+							>
+								About us
+							</a>
 						</li>
 						<li>
-							<a href="#">Contact us</a>
+							<a
+								href="#"
+								className="text-decoration-none text-light text-opacity-75"
+							>
+								Contact us
+							</a>
 						</li>
 						<li>
-							<a href="#">Privacy policy</a>
+							<a
+								href="#"
+								className="text-decoration-none text-light text-opacity-75"
+							>
+								Privacy policy
+							</a>
 						</li>
 					</ul>
 				</div>
 
-				<div className="hidden md:flex flex-col items-start w-full">
-					<h2 className="font-semibold text-white mb-5">
+				<div className="d-none d-md-flex flex-column align-items-start w-100">
+					<h2 className="fw-semibold text-light mb-3">
 						Subscribe to our newsletter
 					</h2>
-					<p className="text-sm text-white/80">
+					<p className="small text-light text-opacity-75">
 						The latest news, articles, and resources, sent to your inbox weekly.
 					</p>
-					<div className="flex items-center gap-2 pt-4">
+					<div className="d-flex align-items-center gap-2 pt-3">
 						<input
-							className="border border-gray-500/30 bg-gray-800 text-gray-500 placeholder-gray-500 outline-hidden w-64 h-9 rounded-sm px-2 text-sm"
+							className="form-control border-secondary bg-secondary text-muted bg-white"
+							style={{ width: "256px", height: "36px" }}
 							type="email"
 							placeholder="Enter your email"
 						/>
-						<button className="bg-blue-600 w-24 h-9 text-white rounded-sm">
+						<button
+							className="btn btn-primary"
+							style={{ width: "96px", height: "36px" }}
+						>
 							Subscribe
 						</button>
 					</div>
 				</div>
 			</div>
-			<p className="py-4 text-center text-xs md:text-sm text-white/60">
-				Copyright 2024 © GreatStack. All Right Reserved.
+			<p className="py-3 text-center small text-light text-opacity-50">
+				Copyright 2024 © Company. All Right Reserved.
 			</p>
 		</footer>
 	);

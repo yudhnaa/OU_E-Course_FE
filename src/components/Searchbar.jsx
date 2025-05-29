@@ -16,24 +16,26 @@ const SearchBar = ({ data }) => {
 	return (
 		<form
 			onSubmit={onSearchHandler}
-			className="max-w-xl w-full md:h-14 h-12 flex items-center bg-white border border-gray-500/20 rounded"
+			className="w-100 d-flex align-items-center bg-white border border-light rounded mx-auto"
+			style={{ maxWidth: "576px", height: "56px" }}
 		>
-			<img
-				className="md:w-auto w-10 px-3"
-				src={assets.search_icon}
-				alt="search_icon"
-			/>
+			<div className="px-3 d-flex align-items-center">
+				<img
+					className="img-fluid"
+					style={{ width: "20px", height: "20px" }}
+					src={assets.search_icon}
+					alt="search_icon"
+				/>
+			</div>
 			<input
 				onChange={(e) => setInput(e.target.value)}
 				value={input}
 				type="text"
-				className="w-full h-full outline-none text-gray-500/80"
+				className="form-control border-0 text-muted"
+				style={{ outline: "none", boxShadow: "none" }}
 				placeholder="Search for courses"
 			/>
-			<button
-				type="submit"
-				className="bg-blue-600 rounded text-white md:px-10 px-7 md:py-3 py-2 mx-1"
-			>
+			<button type="submit" className="btn btn-primary mx-1 px-3 px-md-4 py-2">
 				Search
 			</button>
 		</form>
