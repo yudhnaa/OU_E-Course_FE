@@ -7,8 +7,12 @@ import { AppContextProvider } from "./contexts/AppContext";
 import Navbar from "./components/Navbar";
 import CoursesList from "./pages/CoursesList";
 import MyEnrollments from "./pages/MyEnrollments";
-import SignIn from "./pages/SignIn";
+import LogIn from "./pages/LogIn";
 import "bootstrap/dist/css/bootstrap.min.css";
+import SignUp from "./pages/SignUp";
+import ProfilePage from "./pages/ProfilePage";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
 	return (
@@ -21,13 +25,27 @@ function App() {
 					<Route path="/" element={<Home />} />
 					<Route path="/course-list" element={<CoursesList />} />
 					<Route path="/my-enrollments" element={<MyEnrollments />} />
-					<Route path="/login" element={<SignIn />} />
-					<Route path="/signup" element={<SignIn />} />
-					<Route path="/forgot-password" element={<SignIn />} />
+					<Route path="/profile" element={<ProfilePage />} />
+					<Route path="/login" element={<LogIn />} />
+					<Route path="/signup" element={<SignUp />} />
+					<Route path="/forgot-password" element={<LogIn />} />
 					{/* <Route path="*" element={<Home />} /> */}
 				</Routes>
 
 				<Footer />
+
+				{/* Toast Container for notifications */}
+				<ToastContainer
+					position="top-right"
+					autoClose={3000}
+					hideProgressBar={false}
+					newestOnTop={false}
+					closeOnClick
+					rtl={false}
+					pauseOnFocusLoss
+					draggable
+					pauseOnHover
+				/>
 			</AppContextProvider>
 		</BrowserRouter>
 	);
