@@ -10,7 +10,7 @@ const validationRules = {
 	password: {
 		required: true,
 		minLength: 3,
-		message: "Password must be at least 6 characters long",
+		message: "Password must be at least 3 characters long",
 	},
 };
 

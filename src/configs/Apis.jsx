@@ -4,7 +4,10 @@ const API_BASE_URL = "http://localhost:8080/Ecourse/api";
 
 export const endpoints = {
 	login: `${API_BASE_URL}/login`,
+	signup: `${API_BASE_URL}/user/create`,
+
 	profile: `${API_BASE_URL}/secure/profile`,
+	updateProfile: `${API_BASE_URL}/secure/profile/update`,
 };
 
 export const authApis = () => {

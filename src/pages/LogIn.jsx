@@ -10,6 +10,7 @@ import {
 import { Link } from "react-router-dom";
 import { AppContext } from "../contexts/AppContext";
 import useFormValidation from "../hooks/useFormValidation";
+import { toast, ToastContainer } from "react-toastify";
 
 const quotes = [
 	{
@@ -26,7 +27,7 @@ const quotes = [
 	},
 ];
 
-export default function SignIn() {
+const LogIn = () => {
 	const [currentQuote, setCurrentQuote] = useState(0);
 	const [showPassword, setShowPassword] = useState(false);
 	const [rememberMe, setRememberMe] = useState(false);
@@ -80,7 +81,20 @@ export default function SignIn() {
 		});
 
 		if (result.success) {
+			toast.success(result.message, {
+				position: "top-right",
+				autoClose: 3000,
+				closeOnClick: true,
+				pauseOnHover: true,
+			});
 			reset();
+		} else {
+			toast.error(result.message, {
+				position: "top-right",
+				autoClose: 3000,
+				closeOnClick: true,
+				pauseOnHover: true,
+			});
 		}
 	};
 
@@ -90,46 +104,6 @@ export default function SignIn() {
 
 	return (
 		<div className="min-vh-100 d-flex align-items-center justify-content-center py-4 px-3 position-relative bg-success bg-opacity-10">
-			{/* Animated background elements */}
-			<div
-				className="position-absolute w-100 h-100 overflow-hidden"
-				style={{ pointerEvents: "none" }}
-			>
-				<div
-					className="position-absolute bg-success bg-opacity-25 rounded-circle"
-					style={{
-						top: "-160px",
-						right: "-160px",
-						width: "320px",
-						height: "320px",
-						filter: "blur(40px)",
-						opacity: "0.7",
-					}}
-				></div>
-				<div
-					className="position-absolute bg-success bg-opacity-25 rounded-circle"
-					style={{
-						bottom: "-160px",
-						left: "-160px",
-						width: "320px",
-						height: "320px",
-						filter: "blur(40px)",
-						opacity: "0.7",
-					}}
-				></div>
-				<div
-					className="position-absolute bg-info bg-opacity-25 rounded-circle"
-					style={{
-						top: "160px",
-						left: "160px",
-						width: "320px",
-						height: "320px",
-						filter: "blur(40px)",
-						opacity: "0.7",
-					}}
-				></div>
-			</div>
-
 			<div
 				className="position-relative w-100 bg-white bg-opacity-90 rounded-4 shadow-lg overflow-hidden d-flex flex-column flex-lg-row border border-light"
 				style={{ maxWidth: "1152px", backdropFilter: "blur(8px)" }}
@@ -426,4 +400,6 @@ export default function SignIn() {
 			</div>
 		</div>
 	);
-}
+};
+
+export default LogIn;

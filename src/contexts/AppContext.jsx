@@ -128,7 +128,7 @@ const AppContextProvider = (props) => {
 
 				setIsLoading(false);
 				navigate("/"); // Redirect to home
-				return { success: true };
+				return { success: true, message: "Login successful" };
 			} else {
 				throw new Error(response.message || "Login failed");
 			}
@@ -196,6 +196,7 @@ const AppContextProvider = (props) => {
 		user: userState.user,
 		isAuthenticated: userState.isAuthenticated,
 		isLoading,
+		setIsLoading,
 		error,
 		// Auth functions
 		login,
