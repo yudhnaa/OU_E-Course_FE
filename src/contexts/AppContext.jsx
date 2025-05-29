@@ -111,7 +111,7 @@ const AppContextProvider = (props) => {
 						message: "Invalid username or password",
 					});
 				}
-			}, 1000); // Simulate network delay
+			}, 1000);
 		});
 	};
 
