@@ -8,7 +8,16 @@ export const endpoints = {
 	signup: `${API_BASE_URL}/user/create`,
 
 	profile: `${API_BASE_URL}/secure/profile`,
-	updateProfile: `${API_BASE_URL}/secure/profile/update`,
+	updateProfile: `${API_BASE_URL}/secure/profile`,
+	changePassword: `${API_BASE_URL}/secure/change-password`,
+
+	courseList: `${API_BASE_URL}/course-list`,
+	courseDetails: (courseId) => `${API_BASE_URL}/course/${courseId}`,
+	enrolledCourses: `${API_BASE_URL}/secure/enrolled-courses`,
+	isEnrollCourse: (courseId) =>
+		`${API_BASE_URL}/secure/course/${courseId}/is-enrolled-course`,
+
+	createPaymentSession: `${API_BASE_URL}/secure/payment/checkout`,
 
 	// Course exercises
 	exercises: (courseId) => `${API_BASE_URL}/courses/${courseId}/exercises`,
