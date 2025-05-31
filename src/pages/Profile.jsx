@@ -12,7 +12,13 @@ import {
 } from "react-bootstrap";
 import { AppContext } from "../contexts/AppContext";
 import { assets } from "../assets/assets";
-import { FaCamera, FaUser, FaLock } from "react-icons/fa";
+import {
+	FaCamera,
+	FaUser,
+	FaLock,
+	FaFacebookF,
+	FaGoogle,
+} from "react-icons/fa";
 import { toast } from "react-toastify";
 import Apis, { authApis, endpoints } from "../configs/Apis";
 
@@ -231,11 +237,13 @@ const ProfilePage = () => {
 	}, [user]);
 
 	return (
-		<div className="profile-page">
+		<div className="min-vh-100" style={{ backgroundColor: "#f8f9fa" }}>
 			{/* Profile Header Background */}
 			<div
-				className="position-relative profile-header-bg"
-				style={{ height: "200px" }}
+				className="position-relative"
+				style={{
+					height: "200px",
+				}}
 			>
 				<div className="position-absolute w-100 h-100"></div>
 			</div>
@@ -273,9 +281,66 @@ const ProfilePage = () => {
 									/>
 								</div>
 								<h5 className="mb-1 fw-bold">
-									{user?.firstName} {user?.lastName}
+									{user?.userIdFirstName} {user?.userIdLastName}
 								</h5>
 								<p className="text-muted mb-0">{user?.role || "Student"}</p>
+
+								{/* Social Network Portfolio */}
+								<div className="mt-3 pt-3 border-top">
+									<h6 className="fw-semibold text-dark mb-3">
+										Social Portfolio
+									</h6>
+									<div className="d-flex justify-content-center gap-3">
+										<div className="text-center">
+											<div
+												className="d-flex align-items-center justify-content-center rounded-circle mb-2"
+												style={{
+													width: "40px",
+													height: "40px",
+													backgroundColor: "#1877f2",
+													cursor: "pointer",
+													transition: "transform 0.2s ease",
+												}}
+												onMouseEnter={(e) =>
+													(e.target.style.transform = "scale(1.1)")
+												}
+												onMouseLeave={(e) =>
+													(e.target.style.transform = "scale(1)")
+												}
+											>
+												<FaFacebookF className="text-white" size={18} />
+											</div>
+											<small className="text-muted">Facebook</small>
+											<div className="small text-success fw-medium">
+												Connected
+											</div>
+										</div>
+										<div className="text-center">
+											<div
+												className="d-flex align-items-center justify-content-center rounded-circle mb-2"
+												style={{
+													width: "40px",
+													height: "40px",
+													backgroundColor: "#db4437",
+													cursor: "pointer",
+													transition: "transform 0.2s ease",
+												}}
+												onMouseEnter={(e) =>
+													(e.target.style.transform = "scale(1.1)")
+												}
+												onMouseLeave={(e) =>
+													(e.target.style.transform = "scale(1)")
+												}
+											>
+												<FaGoogle className="text-white" size={18} />
+											</div>
+											<small className="text-muted">Google</small>
+											<div className="small text-success fw-medium">
+												Connected
+											</div>
+										</div>
+									</div>
+								</div>
 							</Card.Body>
 						</Card>
 					</Col>

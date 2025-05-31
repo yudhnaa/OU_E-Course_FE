@@ -1,5 +1,6 @@
 import React from "react";
 import { assets, dummyTestimonial } from "../assets/assets";
+import StarRating from "./StarRating";
 
 const TestimonialsSection = () => {
 	return (
@@ -29,22 +30,10 @@ const TestimonialsSection = () => {
 										{testimonial.role}
 									</p>
 								</div>
-							</div>
+							</div>{" "}
 							<div className="card-body">
-								<div className="d-flex gap-1 mb-3">
-									{[...Array(5)].map((_, i) => (
-										<img
-											className="img-fluid"
-											style={{ height: "20px" }}
-											key={i}
-											src={
-												i < Math.floor(testimonial.rating)
-													? assets.star
-													: assets.star_blank
-											}
-											alt="star"
-										/>
-									))}
+								<div className="mb-3">
+									<StarRating rating={testimonial.rating} size="20px" />
 								</div>
 								<p className="text-muted">{testimonial.feedback}</p>
 							</div>

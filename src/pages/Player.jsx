@@ -6,7 +6,7 @@ import { useParams } from "react-router-dom";
 import humanizeDuration from "humanize-duration";
 import axios from "axios";
 import { toast } from "react-toastify";
-import Rating from "../../components/student/Rating";
+import Rating from "../../components/Rating";
 import Footer from "../../components/student/Footer";
 import Loading from "../../components/student/Loading";
 

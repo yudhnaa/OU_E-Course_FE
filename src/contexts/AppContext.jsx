@@ -96,9 +96,6 @@ const AppContextProvider = (props) => {
 		setError(null);
 
 		try {
-			console.log("Logging in with credentials:", credentials);
-			console.log("API endpoint:", endpoints["login"]);
-
 			const response = await Apis.post(endpoints["login"], {
 				username: credentials.username,
 				password: credentials.password,

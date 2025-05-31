@@ -1,180 +1,321 @@
-import React, { useContext, useEffect, useState } from "react";
-import axios from "axios";
-import { Line } from "rc-progress";
+import { useContext, useEffect, useState } from "react";
+import { Container, Row, Col } from "react-bootstrap";
+import { assets } from "../assets/assets";
 import { AppContext } from "../contexts/AppContext";
+import SearchBar from "../components/Searchbar";
+import CourseCard from "../components/CourseCard";
+import CourseFilters from "../components/CourseFilters";
+import Pagination from "../components/Pagination";
+import Apis, { endpoints } from "../configs/Apis";
 import { toast } from "react-toastify";
+import { PAGE_SIZE } from "../configs/AppConfig";
+import { arrayToDate } from "../utils/formatUtils";
 
-const MyEnrollments = () => {
-	const {
-		userData,
-		fetchUserEnrolledCourses,
-		navigate,
-		backendUrl,
-		getToken,
-		calculateNoOfLectures,
-	} = useContext(AppContext);
+const defaultFilters = {
+	category: {
+		filterType: "category",
+		filterValue: "all",
+	},
+	lecturer: {
+		filterType: "lecturer",
+		filterValue: "",
+	},
+	sortBy: {
+		filterType: "sortBy",
+		filterValue: "participants",
+	},
+};
 
-	const enrolledCourses = [
-		{
-			_id: "course001",
-			courseThumbnail:
-				"https://via.placeholder.com/400x200.png?text=React+Basics",
-			courseTitle: "React Basics for Beginners",
-			courseRatings: [5, 4, 5, 5, 4],
-			coursePrice: 120,
-			discount: 15,
-		},
-		{
-			_id: "course002",
-			courseThumbnail:
-				"https://via.placeholder.com/400x200.png?text=Advanced+React",
-			courseTitle: "Advanced React Patterns",
-			courseRatings: [4, 4, 3, 5, 4, 4],
-			coursePrice: 150,
-			discount: 10,
-		},
-		{
-			_id: "course003",
-			courseThumbnail:
-				"https://via.placeholder.com/400x200.png?text=JavaScript+Mastery",
-			courseTitle: "JavaScript Mastery",
-			courseRatings: [5, 5, 5, 4, 5, 5, 5],
-			coursePrice: 200,
-			discount: 25,
-		},
-		{
-			_id: "course004",
-			courseThumbnail:
-				"https://via.placeholder.com/400x200.png?text=CSS+Fundamentals",
-			courseTitle: "CSS Fundamentals",
-			courseRatings: [3, 4, 3, 3, 4],
-			coursePrice: 80,
-			discount: 5,
-		},
-	];
+const CoursesList = () => {
+	const [allCourses, setAllCourses] = useState([]);
+	const [search, setSearch] = useState("");
+	const [filter, setFilter] = useState(defaultFilters);
+	const [loading, setLoading] = useState(false);
+	const [pagination, setPagination] = useState({
+		currentPage: 1,
+		totalPages: 1,
+		totalItems: 0,
+		itemsPerPage: PAGE_SIZE,
+	});
+	const { navigate } = useContext(AppContext);
 
-	const calculateCourseDuration = (course) => {
-		if (!course.courseChapters || course.courseChapters.length === 0)
-			return "0 min";
+	// sort courses helper function
+	const sortCourses = (courses, sortValue) => {
+		if (!courses || courses.length === 0) {
+			return courses;
+		}
+
+		if (!sortValue || sortValue === "participants") {
+			return [...courses].sort((a, b) => b.studentCount - a.studentCount);
+		}
+
+		switch (sortValue) {
+			case "date-newest":
+				return [...courses].sort((a, b) => {
+					const dateA = arrayToDate(a.dateStart);
+					const dateB = arrayToDate(b.dateStart);
+					return dateB - dateA;
+				});
+			case "date-oldest":
+				return [...courses].sort((a, b) => {
+					const dateA = arrayToDate(a.dateStart);
+					const dateB = arrayToDate(b.dateStart);
+					return dateA - dateB;
+				});
+			case "rating":
+				return [...courses].sort((a, b) => b.averageRate - a.averageRate);
+			default:
+				return [...courses];
+		}
 	};
-	const [progressArray, setProgressData] = useState([]);
 
-	const getCourseProgress = async () => {
+	const getCourses = async (data) => {
+		setLoading(true);
 		try {
-			const token = await getToken();
+			const params = {
+				search: data.search || "",
+				page: data.page || 1,
+				limit: PAGE_SIZE,
+			};
+			if (data.filter) {
+				if (
+					data.filter.category &&
+					data.filter.category.filterValue !== "all"
+				) {
+					params.category = data.filter.category.filterValue;
+				}
+				if (data.filter.lecturer && data.filter.lecturer.filterValue) {
+					params.lecturer = data.filter.lecturer.filterValue;
+				}
+			}
 
-			// Use Promise.all to handle multiple async operations
-			const tempProgressArray = await Promise.all(
-				enrolledCourses.map(async (course) => {
-					const { data } = await axios.post(
-						`${backendUrl}/api/user/get-course-progress`,
-						{ courseId: course._id },
-						{ headers: { Authorization: `Bearer ${token}` } }
-					);
+			const res = await Apis.get(endpoints["courseList"], {
+				params: params,
+			});
 
-					// Calculate total lectures
-					let totalLectures = calculateNoOfLectures(course);
+			if (res.status === 200) {
+				// Get the courses data
+				let courses = res.data.courses || res.data;
 
-					const lectureCompleted = data.progressData
-						? data.progressData.lectureCompleted.length
-						: 0;
-					return { totalLectures, lectureCompleted };
-				})
-			);
+				// Always apply client-side sorting based on current filter
+				const sortValue =
+					data.filter?.sortBy?.filterValue || filter.sortBy.filterValue;
+				if (sortValue) {
+					courses = sortCourses(courses, sortValue);
+				}
 
-			setProgressData(tempProgressArray);
+				setAllCourses(courses);
+
+				// Update pagination state if API provides pagination info
+				if (res.data.pagination) {
+					setPagination({
+						currentPage: res.data.pagination.currentPage,
+						totalPages: Math.ceil(res.data.pagination.totalItems / PAGE_SIZE),
+						totalItems: res.data.pagination.totalItems,
+						itemsPerPage: pagination.itemsPerPage,
+					});
+				} else {
+					// if APIs that don't provide pagination info
+					const courses = res.data.courses || res.data;
+					setPagination({
+						currentPage: data.page || 1,
+						totalPages: Math.ceil(courses.length / PAGE_SIZE),
+						totalItems: courses.length,
+						itemsPerPage: pagination.itemsPerPage,
+					});
+				}
+
+				return {
+					success: true,
+					message: "Courses fetched successfully",
+				};
+			} else {
+				return {
+					success: false,
+					message: "Failed to fetch courses",
+				};
+			}
 		} catch (error) {
-			toast.error(error.message);
+			console.error("Error fetching courses:", error);
+			return {
+				success: false,
+				message: error.response?.data?.message || "Failed to fetch courses",
+			};
+		} finally {
+			setLoading(false);
 		}
 	};
+	const handleSearch = async (params) => {
+		const res = await getCourses({
+			search: params.search,
+			filter: params.filter,
+			page: params.page || 1,
+			limit: pagination.itemsPerPage,
+		});
 
-	useEffect(() => {
-		if (userData) {
-			fetchUserEnrolledCourses();
+		if (res.success) {
+			// Don't show success toast for normal searches to avoid spam
+			// toast.success(res.message);
+		} else {
+			toast.error(res.message);
 		}
-	}, [userData]);
+	};
+	const updateFilter = (filterType, filterValue) => {
+		const newFilter = {
+			...filter,
+			[filterType]: {
+				filterType,
+				filterValue,
+			},
+		};
+		setFilter(newFilter);
 
-	useEffect(() => {
-		if (enrolledCourses.length > 0) {
-			getCourseProgress();
+		if (filterType === "sortBy") {
+			const sortedCourses = sortCourses(allCourses, filterValue);
+			setAllCourses(sortedCourses);
+		} else {
+			handleSearch({
+				search: search || "",
+				filter: newFilter,
+				page: 1, // Reset to first page when filters change
+			});
 		}
-	}, [enrolledCourses]);
+	};
+	const clearAllFilters = () => {
+		setFilter(defaultFilters);
+		handleSearch({
+			search: search || "",
+			filter: defaultFilters,
+			page: 1,
+		});
+	};
+	const handlePageChange = (page) => {
+		handleSearch({
+			search: search || "",
+			filter: filter,
+			page: page,
+		});
+		// Scroll to top when page changes
+		window.scrollTo({ top: 0, behavior: "smooth" });
+	};
+	useEffect(() => {
+		// Load courses when component mounts
+		handleSearch({
+			search: search || "",
+			filter: filter,
+			page: 1,
+		});
+	}, []);
+
 	return (
-		<>
-			<div
-				className="px-4 px-md-5 pt-4"
-				style={{ paddingLeft: "144px", paddingRight: "144px" }}
-			>
-				<h1 className="fs-2 fw-semibold">My Enrollments</h1>{" "}
-				<div className="table-responsive mt-4">
-					<table className="table table-bordered">
-						<thead className="table-light">
-							<tr className="d-none d-sm-table-row">
-								<th className="px-3 py-3 fw-semibold">Course</th>
-								<th className="px-3 py-3 fw-semibold d-none d-sm-table-cell">
-									Duration
-								</th>
-								<th className="px-3 py-3 fw-semibold d-none d-sm-table-cell">
-									Completed
-								</th>
-								<th className="px-3 py-3 fw-semibold">Status</th>
-							</tr>
-						</thead>
-						<tbody>
-							{enrolledCourses.map((course, index) => (
-								<tr key={index}>
-									<td className="px-2 px-md-3 py-3">
-										<div className="d-flex align-items-center gap-3">
-											<img
-												src={course.courseThumbnail}
-												alt=""
-												className="img-fluid"
-												style={{ width: "56px", height: "auto" }}
-											/>
-											<div className="flex-fill">
-												<p className="mb-1 small">{course.courseTitle}</p>
-												<Line
-													className="bg-light rounded"
-													strokeWidth={2}
-													percent={
-														progressArray[index]
-															? (progressArray[index].lectureCompleted * 100) /
-															  progressArray[index].totalLectures
-															: 0
-													}
-												/>
-											</div>
-										</div>
-									</td>
-									<td className="px-3 py-3 d-none d-sm-table-cell">
-										{calculateCourseDuration(course)}
-									</td>
-									<td className="px-3 py-3 d-none d-sm-table-cell">
-										{progressArray[index] &&
-											`${progressArray[index].lectureCompleted} / ${progressArray[index].totalLectures}`}
-										<span className="small ms-2">Lectures</span>
-									</td>
-									<td className="px-3 py-3">
-										<button
-											onClick={() => navigate("/player/" + course._id)}
-											className="btn btn-primary btn-sm"
-										>
-											{progressArray[index] &&
-											progressArray[index].lectureCompleted /
-												progressArray[index].totalLectures ===
-												1
-												? "Completed"
-												: "On Going"}
-										</button>
-									</td>
-								</tr>
-							))}
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</>
+		<Container fluid className="px-4 px-md-5 pt-5">
+			<Row>
+				<Col xl={9} lg={8} className="mb-4">
+					{/* header */}
+					<div className="d-flex flex-column flex-md-row gap-4 align-items-start justify-content-between w-100 mb-4">
+						<div>
+							<h1 className="display-5 fw-semibold text-dark">Course List</h1>
+							<p className="text-muted">
+								<span
+									onClick={() => navigate("/")}
+									className="text-primary cursor-pointer text-decoration-none"
+								>
+									Home
+								</span>{" "}
+								/ <span>Course List</span>
+							</p>
+						</div>
+						<SearchBar
+							data={{ search, filter }}
+							searchHandler={handleSearch}
+							setSearch={setSearch}
+						/>
+					</div>
+					{/* mobile */}
+					<div className="d-lg-none mb-4">
+						<CourseFilters
+							filter={filter}
+							updateFilter={updateFilter}
+							onClearFilters={clearAllFilters}
+						/>
+					</div>
+					{/* Search Results Info */}
+					{search && (
+						<div className="d-inline-flex align-items-center gap-3 px-3 py-2 border mb-4 text-muted">
+							<p className="mb-0">Search: "{search}"</p>
+							<img
+								onClick={() => navigate("/course-list")}
+								className="cursor-pointer"
+								src={assets.cross_icon}
+								alt=""
+							/>
+						</div>
+					)}{" "}
+					{/* Results count and loading */}
+					<div className="d-flex justify-content-between align-items-center mb-3">
+						<p className="text-muted mb-0">
+							{loading
+								? "Loading..."
+								: pagination.totalItems > 0
+								? `Showing ${
+										(pagination.currentPage - 1) * pagination.itemsPerPage + 1
+								  } to ${Math.min(
+										pagination.currentPage * pagination.itemsPerPage,
+										pagination.totalItems
+								  )} of ${pagination.totalItems} courses`
+								: "No courses found"}
+						</p>
+					</div>
+					{/* Course Content */}
+					{loading ? (
+						<div className="d-flex justify-content-center py-5">
+							<div className="spinner-border text-primary" role="status">
+								<span className="visually-hidden">Loading...</span>
+							</div>
+						</div>
+					) : allCourses.length === 0 ? (
+						<div className="text-center py-5" style={{ minHeight: "400px" }}>
+							<h4>No courses found</h4>
+							<p className="text-muted">Try adjusting your search or filters</p>
+						</div>
+					) : (
+						<>
+							{" "}
+							<div className="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-4 row-cols-xl-5 g-3">
+								{allCourses.map((course, index) => (
+									<div key={course.id} className="col">
+										<CourseCard course={course} />
+									</div>
+								))}
+							</div>
+							{/* Pagination Component */}
+							<div className="mt-4">
+								<Pagination
+									currentPage={pagination.currentPage}
+									totalPages={pagination.totalPages}
+									totalItems={pagination.totalItems}
+									itemsPerPage={pagination.itemsPerPage}
+									onPageChange={handlePageChange}
+									loading={loading}
+								/>
+							</div>
+						</>
+					)}
+				</Col>
+
+				{/* Desktop Filters Sidebar - Show only on large screens */}
+				<Col xl={3} lg={4} className="d-none d-lg-block">
+					<div className="position-sticky" style={{ top: "100px" }}>
+						<CourseFilters
+							filter={filter}
+							updateFilter={updateFilter}
+							onClearFilters={clearAllFilters}
+						/>
+					</div>
+				</Col>
+			</Row>
+		</Container>
 	);
 };
 
-export default MyEnrollments;
+export default CoursesList;

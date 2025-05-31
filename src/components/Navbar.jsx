@@ -2,17 +2,18 @@ import React, { useContext } from "react";
 import { assets } from "../assets/assets";
 import { Link, useLocation } from "react-router-dom";
 import { AppContext } from "../contexts/AppContext";
-import { FaRegCircleUser } from "react-icons/fa6";
-import { Dropdown } from "react-bootstrap";
+import { useCart } from "../contexts/CartContext";
+import { FaUserCircle, FaShoppingCart } from "react-icons/fa";
+import { Dropdown, Badge } from "react-bootstrap";
 
 // import { useClerk, UserButton, useUser } from '@clerk/clerk-react';
 
 const Navbar = () => {
 	const location = useLocation();
-
 	const isCoursesListPage = location.pathname.includes("/course-list");
 
 	const { navigate, isAuthenticated, user, logout } = useContext(AppContext);
+	const { getCartItemCount } = useCart();
 
 	return (
 		<div
@@ -64,6 +65,26 @@ const Navbar = () => {
 					>
 						Privacy Policy
 					</Link>
+
+					{/* Cart Icon */}
+					<Link
+						to="/cart"
+						className="position-relative d-flex align-items-center text-decoration-none"
+						style={{ color: "inherit" }}
+						title="Shopping Cart"
+					>
+						<FaShoppingCart size={20} />
+						{getCartItemCount() > 0 && (
+							<Badge
+								bg="danger"
+								className="position-absolute top-0 start-100 translate-middle rounded-pill"
+								style={{ fontSize: "0.75rem", minWidth: "1.5rem" }}
+							>
+								{getCartItemCount() > 99 ? "99+" : getCartItemCount()}
+							</Badge>
+						)}
+					</Link>
+
 					{isAuthenticated ? (
 						<>
 							{/* Profile Dropdown */}
@@ -82,7 +103,7 @@ const Navbar = () => {
 											alt="Profile"
 										/>
 									) : (
-										<FaRegCircleUser />
+										<FaUserCircle />
 									)}
 									<span className="ms-1">
 										{user ? user.userIdUsername : "Profile"}
