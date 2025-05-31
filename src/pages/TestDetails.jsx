@@ -5,52 +5,47 @@ import { Table, Button, Spinner } from "react-bootstrap";
 import Apis, { authApis, endpoints } from "../configs/Apis";
 import { useNavigate } from "react-router-dom";
 
-const ExerciseDetails = () => {
-    const { courseId, exerciseId } = useParams();
-    const [exerciseDetail, setExerciseDetail] = useState(null);
-    const [exerciseAttempts, setExerciseAttempts] = useState([]);
+const TestDetails = () => {
+    const { courseId, testId } = useParams();
+    const [testDetail, setTestDetail] = useState(null);
+    const [testAttempts, setTestAttempts] = useState([]);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     const [loading, setLoading] = useState(true);
-    const pageSize = 5;
     const navigate = useNavigate();
 
-    const fetchExerciseDetail = async () => {
+    const fetchTestDetail = async () => {
         try {
-            const response = await Apis.get(endpoints["exerciseDetail"](courseId, exerciseId));
+            const response = await Apis.get(endpoints["testDetail"](courseId, testId));
             if (response.status === 200) {
-                setExerciseDetail(response.data);
+                setTestDetail(response.data);
             } else {
-                toast.error("Could not fetch exercise details");
+                toast.error("Could not fetch test details");
             }
         } catch (error) {
-            toast.error("Error fetching exercise details");
+            toast.error("Error fetching test details");
             console.error(error);
         }
     };
 
-    const fetchExerciseAttempts = async () => {
+    const fetchTestAttempts = async () => {
         try {
             setLoading(true);
-            let url = `${endpoints["exerciseAttempt"](courseId, exerciseId)}?page=${page}`;
+            let url = `${endpoints["testAttempt"](courseId, testId)}?page=${page}`;
             const res = await authApis().get(url);
             if (res.data.length === 0) {
                 setPage(0);
-            }
-
-            else {
+            } else {
                 if (page === 1) {
-                    setExerciseAttempts(res.data);
-                }
-                else {
-                    setExerciseAttempts((prev) => [...prev, ...res.data]);
+                    setTestAttempts(res.data);
+                } else {
+                    setTestAttempts((prev) => [...prev, ...res.data]);
                 }
             }
         } catch (error) {
-            toast.error("Error fetching exercise attempts");
+            toast.error("Error fetching test attempts");
             console.error(error);
-        }
-        finally {
+        } finally {
             setLoading(false);
         }
     };
@@ -58,12 +53,11 @@ const ExerciseDetails = () => {
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
-            await Promise.all([fetchExerciseDetail()]);
-            await fetchExerciseAttempts();
-            setLoading(false);
+            await fetchTestDetail();
+            await fetchTestAttempts();
         };
         fetchData();
-    }, []);
+    }, [courseId, testId]);
 
     const loadMore = () => {
         if (!loading && page > 0) {
@@ -73,10 +67,9 @@ const ExerciseDetails = () => {
 
     useEffect(() => {
         if (page > 1) {
-            fetchExerciseAttempts();
+            fetchTestAttempts();
         }
     }, [page]);
-
 
     const formatDate = (arr) => {
         if (!Array.isArray(arr)) return "";
@@ -87,24 +80,25 @@ const ExerciseDetails = () => {
     return (
         <>
             {loading && (
-                <div className="text-center my-3">
-                    <Spinner animation="border" variant="primary" />
-                </div>
+                    <div className="text-center my-3">
+                        <Spinner animation="border" variant="primary" />
+                    </div>
             )}
-            <div className="exercise-details container mt-4">
-                {exerciseDetail && (
-                    <>
-                        <h2>{exerciseDetail.name}</h2>
-                        <p><strong>Lesson:</strong> {exerciseDetail.lessonIdName}</p>
-                        <p><strong>Duration:</strong> {exerciseDetail.durationMinutes} minutes</p>
-                        <p><strong>Max Score:</strong> {exerciseDetail.maxScore}</p>
 
-                        {exerciseAttempts.length === 0 ? (
+            <div className="test-details container mt-4">
+                {testDetail && (
+                    <>
+                        <h2>{testDetail.name}</h2>
+                        <p><strong>Duration:</strong> {testDetail.durationMinutes} minutes</p>
+                        <p><strong>Max Score:</strong> {testDetail.maxScore}</p>
+                        <p><strong>Description:</strong> {testDetail.description}</p>
+
+                        {testAttempts.length === 0 ? (
                             <Button variant="primary"
-                                    onClick={() => navigate(`/courses/${courseId}/exercises/${exerciseId}/attempt`)}>Take Quiz</Button>
+                                    onClick={() => navigate(`/courses/${courseId}/tests/${testId}/attempt`)}>Take Quiz</Button>
                         ) : (
                             <Button variant="warning"
-                                    onClick={() => navigate(`/courses/${courseId}/exercises/${exerciseId}/attempt`)}>Retry</Button>
+                                    onClick={() => navigate(`/courses/${courseId}/tests/${testId}/attempt`)}>Retry</Button>
                         )}
 
                         <hr />
@@ -116,23 +110,21 @@ const ExerciseDetails = () => {
                                     <th>Started At</th>
                                     <th>Submitted At</th>
                                     <th>Score</th>
-                                    <th>Response</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {exerciseAttempts.map((attempt, index) => (
+                                {testAttempts.map((attempt, index) => (
                                     <tr key={attempt.id}>
                                         <td>{index + 1}</td>
                                         <td>{formatDate(attempt.startedAt)}</td>
                                         <td>{formatDate(attempt.submittedAt)}</td>
                                         <td>{attempt.totalScore}%</td>
-                                        <td>{attempt.response}</td>
                                     </tr>
                                 ))}
                             </tbody>
                         </Table>
 
-                        {exerciseAttempts.length > 0 && (
+                        {testAttempts.length > 0 && (
                             <div className="text-center mb-3">
                                 <Button onClick={loadMore}>Load More</Button>
                             </div>
@@ -142,6 +134,6 @@ const ExerciseDetails = () => {
             </div>
         </>
     );
-};
+}
 
-export default ExerciseDetails;
+export default TestDetails;

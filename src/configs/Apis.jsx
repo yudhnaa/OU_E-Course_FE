@@ -23,6 +23,14 @@ export const endpoints = {
 
 	// Course tests
 	tests: (courseId) => `${API_BASE_URL}/courses/${courseId}/tests`,
+	testDetail: (courseId, testId) =>
+		`${API_BASE_URL}/courses/${courseId}/tests/${testId}`,
+	testQuestions: (courseId, testId) =>
+		`${API_BASE_URL}/courses/${courseId}/tests/${testId}/questions`,
+	testAttempt: (courseId, testId) =>
+		`${API_BASE_URL}/secure/courses/${courseId}/tests/${testId}/attempts`,
+	testSubmit: (courseId, testId) =>
+		`${API_BASE_URL}/secure/courses/${courseId}/tests/${testId}/attempts/add`,
 };
 
 export const authApis = () => {

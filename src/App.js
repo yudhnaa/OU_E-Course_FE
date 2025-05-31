@@ -16,6 +16,8 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ExerciseDetails from "./pages/ExerciseDetails";
 import ExerciseAttempt from "./pages/ExerciseAttempt";
+import TestDetails from "./pages/TestDetails";
+import TestAttempt from "./pages/TestAttempt";
 
 function App() {
 	return (
@@ -30,6 +32,8 @@ function App() {
 					<Route path="/course/:courseId" element={<CourseDetails />} />
 					<Route path="/courses/:courseId/exercises/:exerciseId" element={<ExerciseDetails />} />
 					<Route path="/courses/:courseId/exercises/:exerciseId/attempt" element={<ExerciseAttempt />} />
+					<Route path="/courses/:courseId/tests/:testId" element={<TestDetails />} />
+					<Route path="/courses/:courseId/tests/:testId/attempt" element={<TestAttempt />} />
 					<Route path="/my-enrollments" element={<MyEnrollments />} />
 					<Route path="/profile" element={<ProfilePage />} />
 					<Route path="/login" element={<LogIn />} />

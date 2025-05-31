@@ -4,13 +4,15 @@ import { Container, Card, ProgressBar, Form, Button, Modal, Alert, Spinner, Row,
 import Apis, { authApis, endpoints } from '../configs/Apis';
 import { toast } from 'react-toastify';
 
-const ExerciseAttempt = () => {
-    const { courseId, exerciseId } = useParams();
-    const navigate = useNavigate();
 
-    // State for quiz data
-    const [exerciseDetail, setExerciseDetail] = useState(null);
+const TestAttempt = () => {
+    const { courseId, testId } = useParams();
+    const navigate = useNavigate();
+    
+    // State for quiz test
+    const [testDetail, setTestDetail] = useState(null);
     const [questions, setQuestions] = useState([]);
+    const [attempts, setAttempts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -18,72 +20,66 @@ const ExerciseAttempt = () => {
     const [answers, setAnswers] = useState({});
     const [timeLeft, setTimeLeft] = useState(null);
     const [showSubmitModal, setShowSubmitModal] = useState(false);
-    const [isSubmitted, setIsSubmitted] = useState(false);
     const [alert, setAlert] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    // Fetch quiz data
     useEffect(() => {
         const fetchQuizData = async () => {
-            try {
+            try{
                 setLoading(true);
 
-                // Fetch exercise details
-                const exerciseRes = await Apis.get(endpoints['exerciseDetail'](courseId, exerciseId));
-                setExerciseDetail(exerciseRes.data);
+                // Fetch test details
+                const testResponse = await Apis.get(endpoints["testDetail"](courseId, testId));
+                setTestDetail(testResponse.data);
 
-                // Khởi tạo timeLeft sau khi có data
-                setTimeLeft(exerciseRes.data.durationMinutes * 60);
+                setTimeLeft(testResponse.data.durationMinutes * 60); // Convert minutes to seconds
 
                 // Fetch questions
-                const questionsRes = await Apis.get(endpoints['exerciseQuestions'](courseId, exerciseId));
-                setQuestions(questionsRes.data);
+                const questionsResponse = await Apis.get(endpoints["testQuestions"](courseId, testId));
+                setQuestions(questionsResponse.data);
 
-            } catch (err) {
-                setError("Failed to load quiz data. Please try again.");
-                console.error("Error fetching quiz data:", err);
-                setTimeout(() => navigate(`/courses/${courseId}/exercises/${exerciseId}`), 2000);
-            } finally {
+            }
+            catch(error) {
+                setError("Failed to fetch test details or questions.");
+                console.error(error);
+                setTimeout(() => navigate(`/courses/${courseId}/tests/${testId}`), 2000);
+            }
+            finally {
                 setLoading(false);
             }
         };
-
         fetchQuizData();
-    }, [courseId, exerciseId, navigate]);
+    }, [courseId, testId, navigate]);
 
-    // Timer countdown
     useEffect(() => {
-        // Chỉ chạy timer khi timeLeft khác null (đã được khởi tạo)
-        if (timeLeft === null) return;
+        if(timeLeft === null) return;
 
-        if (timeLeft <= 0 && !isSubmitted) {
-            handleAutoSubmit();
-            return;
+        if(timeLeft <= 0 && !isSubmitting) {
+            setAlert({ type: 'danger', message: 'Time is up! Submitting your attempt.' });
+            handleSubmit();
         }
 
-        if (!isSubmitted && timeLeft > 0) {
+        if(!isSubmitting && timeLeft > 0){
             const timer = setTimeout(() => {
                 setTimeLeft(prev => prev - 1);
             }, 1000);
-            return () => clearTimeout(timer);
+            return () => clearTimeout(timer); 
         }
-    }, [timeLeft, isSubmitted]);
-
-    // Format time as MM:SS
+    }, [timeLeft, isSubmitting]);
+    
     const formatTime = (seconds) => {
         const mins = Math.floor(seconds / 60);
         const secs = seconds % 60;
         return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-    };
+    }
 
     // Calculate progress percentage
-    const progressPercentage = exerciseDetail
-        ? 100 - (timeLeft / (exerciseDetail.durationMinutes * 60)) * 100
+    const progressPercentage = testDetail
+        ? 100 - (timeLeft / (testDetail.durationMinutes * 60)) * 100
         : 0;
 
-    // Handle answer selection
     const handleAnswerSelect = (questionId, answerId) => {
-        if (!isSubmitted) {
+        if (!isSubmitting) {
             setAnswers(prev => ({
                 ...prev,
                 [questionId]: answerId
@@ -91,35 +87,31 @@ const ExerciseAttempt = () => {
         }
     };
 
-    // Handle quiz submission
-    const handleSubmit = () => {
+    const handleSubmit = () =>{
         const answeredCount = Object.keys(answers).length;
         const totalQuestions = questions.length;
-
-        if (answeredCount < totalQuestions) {
+        if(answeredCount < totalQuestions){
             setAlert({
-                variant: 'warning',
+                variant : 'warning',
                 message: `You have answered ${answeredCount} out of ${totalQuestions} questions. Are you sure you want to submit?`
             });
-        } else {
+        }
+        else{
             setAlert(null);
         }
-
         setShowSubmitModal(true);
-    };
+    }
 
-    // Auto submit when time is up
     const handleAutoSubmit = async () => {
-        setIsSubmitted(true);
+        setIsSubmitting(true);
         setAlert({
             variant: 'danger',
             message: 'Time is up! Your quiz has been automatically submitted.'
         });
 
         await submitAttempt();
-    };
+    }
 
-    // Hàm tính điểm dựa trên câu trả lời
     const calculateScore = () => {
         if (questions.length === 0) return 0;
 
@@ -135,9 +127,8 @@ const ExerciseAttempt = () => {
         });
 
         return (correctCount / questions.length) * 100; // Tính phần trăm
-    };
+    }
 
-    // Hàm chuẩn bị dữ liệu câu trả lời để gửi lên server
     const prepareAnswerSet = () => {
         return questions.map(question => {
             const selectedAnswerId = answers[question.id];
@@ -145,15 +136,14 @@ const ExerciseAttempt = () => {
 
             return {
                 questionIdId: question.id,
-                answerText: selectedAnswer?.content || '',
+                answerText : selectedAnswer?.content || "",
                 isCorrect: selectedAnswer?.isCorrect || false,
-                score: selectedAnswer?.isCorrect ?
-                    (exerciseDetail.maxScore / questions.length) : 0
+                score : selectedAnswer?.isCorrect ? (testDetail.maxScore / questions.length) : 0
             };
         });
     };
 
-    // Submit attempt to server
+    // Submit the attempt
     const submitAttempt = async () => {
         try {
             setIsSubmitting(true);
@@ -163,13 +153,12 @@ const ExerciseAttempt = () => {
                 startedAt: new Date(), // Thời gian bắt đầu làm bài
                 submittedAt: new Date(), // Thời gian nộp bài
                 totalScore: calculateScore(), // Tính điểm dựa trên câu trả lời đúng
-                response: "Completed", // Trạng thái
-                exerciseIdId: exerciseId, // ID bài tập
-                exerciseAttemptAnswerSet: prepareAnswerSet() // Chuẩn bị tập hợp câu trả lời
+                testIdId: testId, // ID test
+                testAttemptAnswerSet: prepareAnswerSet() // Chuẩn bị tập hợp câu trả lời
             };
 
             const response = await authApis().post(
-                endpoints['exerciseSubmit'](courseId, exerciseId),
+                endpoints['testSubmit'](courseId, testId),
                 requestData
             );
 
@@ -177,7 +166,7 @@ const ExerciseAttempt = () => {
 
             // Redirect sau 3 giây
             setTimeout(() => {
-                navigate(`/courses/${courseId}/exercises/${exerciseId}`);
+                navigate(`/courses/${courseId}/tests/${testId}`);
             }, 3000);
 
             return response.data;
@@ -193,7 +182,7 @@ const ExerciseAttempt = () => {
     // Confirm submission
     const confirmSubmit = async () => {
         setShowSubmitModal(false);
-        setIsSubmitted(true);
+        setIsSubmitting(true);
         await submitAttempt();
     };
 
@@ -214,13 +203,13 @@ const ExerciseAttempt = () => {
         );
     }
 
-    if (!exerciseDetail || questions.length === 0) {
+    if (!testDetail || questions.length === 0) {
         return (
             <Container className="my-5">
                 <Alert variant="warning">No quiz data available</Alert>
                 <Button
                     variant="secondary"
-                    onClick={() => navigate(`/courses/${courseId}/exercises/${exerciseId}`)}
+                    onClick={() => navigate(`/courses/${courseId}/tests/${testId}`)}
                 >
                     Go Back
                 </Button>
@@ -228,14 +217,14 @@ const ExerciseAttempt = () => {
         );
     }
 
-    return (
+    return(
         <Container className="quiz-attempt-container my-4">
             {/* Quiz Header */}
             <Card className="mb-4">
                 <Card.Header className="d-flex justify-content-between align-items-center">
                     <div>
-                        <h4 className="mb-0">{exerciseDetail.name}</h4>
-                        <small className="text-muted">{exerciseDetail.lessonIdName}</small>
+                        <h4 className="mb-0">{testDetail.name}</h4>
+                        <small className="text-muted">{testDetail.lessonIdName}</small>
                     </div>
                     <div className={`time-display ${timeLeft < 60 ? 'text-danger' : 'text-primary'}`}>
                         <i className="bi bi-clock me-2"></i>
@@ -272,8 +261,8 @@ const ExerciseAttempt = () => {
                                     <Card.Title>Quiz Info</Card.Title>
                                     <ul className="list-unstyled">
                                         <li><strong>Questions:</strong> {questions.length}</li>
-                                        <li><strong>Duration:</strong> {exerciseDetail.durationMinutes} mins</li>
-                                        <li><strong>Max Score:</strong> {exerciseDetail.maxScore}</li>
+                                        <li><strong>Duration:</strong> {testDetail.durationMinutes} mins</li>
+                                        <li><strong>Max Score:</strong> {testDetail.maxScore}</li>
                                     </ul>
                                 </Card.Body>
                             </Card>
@@ -299,7 +288,7 @@ const ExerciseAttempt = () => {
                             <Card key={question.id} className="mb-4 question-card">
                                 <Card.Header className="d-flex justify-content-between align-items-center">
                                     <h5 className="mb-0">Question {index + 1}</h5>
-                                    {answers[question.id] && !isSubmitted && (
+                                    {answers[question.id] && !isSubmitting && (
                                         <Badge bg="info">Answered</Badge>
                                     )}
                                 </Card.Header>
@@ -317,13 +306,13 @@ const ExerciseAttempt = () => {
                                             label={answer.content}
                                             checked={answers[question.id] === answer.id}
                                             onChange={() => handleAnswerSelect(question.id, answer.id)}
-                                            disabled={isSubmitted}
+                                            disabled={isSubmitting}
                                             className="mb-2 answer-option"
                                         />
                                     ))}
 
                                     {/* Show correct/incorrect feedback after submission */}
-                                    {isSubmitted && answers[question.id] && (
+                                    {isSubmitting && answers[question.id] && (
                                         <Alert
                                             variant={
                                                 question.multipleChoiceAnswerSet.find(a => a.id === answers[question.id])?.isCorrect
@@ -342,7 +331,7 @@ const ExerciseAttempt = () => {
                         ))}
 
                         {/* Submit Button */}
-                        {!isSubmitted && (
+                        {!isSubmitting && (
                             <div className="text-center mt-4">
                                 <Button
                                     variant="primary"
@@ -388,6 +377,6 @@ const ExerciseAttempt = () => {
             </Modal>
         </Container>
     );
-};
 
-export default ExerciseAttempt;
+}
+export default TestAttempt;

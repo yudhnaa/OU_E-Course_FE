@@ -523,7 +523,8 @@ const CourseDetails = () => {
 														</li>
 													</ul>
 													<div className="mt-3">
-														<button className="btn btn-primary">View Test</button>
+														<button className="btn btn-primary"
+																onClick={() => navigate(`/courses/${courseId}/tests/${test.id}`)}>View Test</button>
 													</div>
 												</div>
 											</div>
