@@ -59,7 +59,7 @@ const CourseFilters = ({ filter, updateFilter, onClearFilters }) => {
 			updateFilter("lecturer", lecturer);
 		}, 1000);
 		return () => clearTimeout(timer);
-	}, [lecturer, updateFilter]);
+	}, [lecturer]);
 
 	const clearAllFilters = () => {
 		setLecturer("");

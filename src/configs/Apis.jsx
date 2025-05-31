@@ -18,6 +18,28 @@ export const endpoints = {
 		`${API_BASE_URL}/secure/course/${courseId}/is-enrolled-course`,
 
 	createPaymentSession: `${API_BASE_URL}/secure/payment/checkout`,
+
+	// Course exercises
+	exercises: (courseId) => `${API_BASE_URL}/courses/${courseId}/exercises`,
+	exerciseDetail : (courseId, exerciseId) =>
+		`${API_BASE_URL}/courses/${courseId}/exercises/${exerciseId}`,
+	exerciseAttempt: (courseId, exerciseId) =>
+		`${API_BASE_URL}/secure/courses/${courseId}/exercises/${exerciseId}/attempts`,
+	exerciseQuestions: (courseId, exerciseId) =>
+		`${API_BASE_URL}/courses/${courseId}/exercises/${exerciseId}/questions`,
+	exerciseSubmit: (courseId, exerciseId) =>
+		`${API_BASE_URL}/secure/courses/${courseId}/exercises/${exerciseId}/attempts/add`,
+
+	// Course tests
+	tests: (courseId) => `${API_BASE_URL}/courses/${courseId}/tests`,
+	testDetail: (courseId, testId) =>
+		`${API_BASE_URL}/courses/${courseId}/tests/${testId}`,
+	testQuestions: (courseId, testId) =>
+		`${API_BASE_URL}/courses/${courseId}/tests/${testId}/questions`,
+	testAttempt: (courseId, testId) =>
+		`${API_BASE_URL}/secure/courses/${courseId}/tests/${testId}/attempts`,
+	testSubmit: (courseId, testId) =>
+		`${API_BASE_URL}/secure/courses/${courseId}/tests/${testId}/attempts/add`,
 };
 
 export const authApis = () => {
