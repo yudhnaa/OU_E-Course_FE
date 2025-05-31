@@ -7,12 +7,12 @@ const Footer = () => {
 			className="bg-dark text-start w-100"
 			style={{ paddingLeft: "144px", paddingRight: "144px" }}
 		>
-			<div className="d-flex flex-column flex-md-row align-items-start px-4 px-md-0 justify-content-center gap-4 gap-md-5 py-5 border-bottom border-light border-opacity-25">
+			<div className="d-flex flex-column flex-md-row align-items-start px-3 px-md-0 justify-content-center gap-4 gap-md-5 py-4 border-bottom border-light border-opacity-25">
 				<div className="d-flex flex-column align-items-center align-items-md-start w-100">
 					<img
 						src={assets.logo_dark}
 						alt="logo"
-						style={{ width: "150px", height: "150px" }}
+						style={{ width: "100px", height: "100px" }}
 					/>
 					<p className="mt-4 text-center text-md-start small text-light text-opacity-75">
 						Lorem Ipsum is simply dummy text of the printing and typesetting

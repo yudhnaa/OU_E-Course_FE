@@ -19,9 +19,12 @@ export const endpoints = {
 
 	createPaymentSession: `${API_BASE_URL}/secure/payment/checkout`,
 
+	// Course lessons
+	lessons: (courseId) => `${API_BASE_URL}/secure/${courseId}/lessons`,
+
 	// Course exercises
 	exercises: (courseId) => `${API_BASE_URL}/courses/${courseId}/exercises`,
-	exerciseDetail : (courseId, exerciseId) =>
+	exerciseDetail: (courseId, exerciseId) =>
 		`${API_BASE_URL}/courses/${courseId}/exercises/${exerciseId}`,
 	exerciseAttempt: (courseId, exerciseId) =>
 		`${API_BASE_URL}/secure/courses/${courseId}/exercises/${exerciseId}/attempts`,

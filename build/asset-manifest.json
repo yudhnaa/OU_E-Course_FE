@@ -1,14 +1,16 @@
 {
   "files": {
-    "main.css": "/static/css/main.01f810ad.css",
-    "main.js": "/static/js/main.76f7a542.js",
+    "main.css": "/static/css/main.fad47d1f.css",
+    "main.js": "/static/js/main.4b01b3d9.js",
     "static/js/453.c8ea4fba.chunk.js": "/static/js/453.c8ea4fba.chunk.js",
     "static/media/course_4.png": "/static/media/course_4.ac3932254f357737979b.png",
     "static/media/course_1.png": "/static/media/course_1.9abf291f860613428b13.png",
     "static/media/course_2.png": "/static/media/course_2.c93749b87e994581c28e.png",
     "static/media/course_3.png": "/static/media/course_3.8b099d399d44abd67410.png",
     "static/media/sktech.svg": "/static/media/sktech.5d9c66e2775594f2354329b6106244f3.svg",
+    "static/media/logo.png": "/static/media/logo.9867fadea246756fdcc0.png",
     "static/media/paypal_logo.svg": "/static/media/paypal_logo.1d9b650e59b3db892e35f3de9f3514c3.svg",
+    "static/media/logo_dark.png": "/static/media/logo_dark.9184b499937d277d0ada.png",
     "static/media/accenture_logo.svg": "/static/media/accenture_logo.86825593ac425face0ecbaeb616d9065.svg",
     "static/media/profile_img_1.png": "/static/media/profile_img_1.df3e858e8f559fdc9063.png",
     "static/media/adobe_logo.svg": "/static/media/adobe_logo.723ff4b8da146e27b6fb58490afbe1cb.svg",
@@ -19,8 +21,6 @@
     "static/media/profile_img3.png": "/static/media/profile_img3.8d21fc4a011b0b4eebed.png",
     "static/media/microsoft_logo.svg": "/static/media/microsoft_logo.7e1c00904760164f19d5a4041fab238f.svg",
     "static/media/walmart_logo.svg": "/static/media/walmart_logo.848374959927c5c351fb7357c8263c5a.svg",
-    "static/media/logo.svg": "/static/media/logo.6b89dcb1e08ade703efc0eb419248c2b.svg",
-    "static/media/logo_dark.svg": "/static/media/logo_dark.b9c8dc9fc0be78e4b59eecd39f84c6a5.svg",
     "static/media/earning_icon.svg": "/static/media/earning_icon.07ab09839a80a6585b0f4ceb187bcde6.svg",
     "static/media/patients_icon.svg": "/static/media/patients_icon.0ad0b6ca4548be80cf5898c500de444b.svg",
     "static/media/twitter_icon.svg": "/static/media/twitter_icon.707e2fe7017b1dc420959c3006ddba3f.svg",
@@ -47,12 +47,12 @@
     "static/media/arrow_icon.svg": "/static/media/arrow_icon.fb516509a7754579a7c875a8e48b5e7d.svg",
     "static/media/cross_icon.svg": "/static/media/cross_icon.8d66c48290e5f797129595de3be35637.svg",
     "static/media/down_arrow_icon.svg": "/static/media/down_arrow_icon.574183cba95089cd7e09a6cc02b99f52.svg",
-    "main.01f810ad.css.map": "/static/css/main.01f810ad.css.map",
-    "main.76f7a542.js.map": "/static/js/main.76f7a542.js.map",
+    "main.fad47d1f.css.map": "/static/css/main.fad47d1f.css.map",
+    "main.4b01b3d9.js.map": "/static/js/main.4b01b3d9.js.map",
     "453.c8ea4fba.chunk.js.map": "/static/js/453.c8ea4fba.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.01f810ad.css",
-    "static/js/main.76f7a542.js"
+    "static/css/main.fad47d1f.css",
+    "static/js/main.4b01b3d9.js"
   ]
 }

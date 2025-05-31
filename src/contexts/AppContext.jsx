@@ -15,32 +15,39 @@ const AppContextProvider = (props) => {
 	const navigate = useNavigate();
 	const [userState, userDispatch] = useReducer(userReducer, initialUserState);
 	const [isLoading, setIsLoading] = useState(false);
+	const [isAuthLoading, setIsAuthLoading] = useState(true); // Track auth restoration
 	const [error, setError] = useState(null);
 
 	// Check for existing token on app load
 	useEffect(() => {
-		const token = cookie.load("token");
-		const userData = cookie.load("userData");
+		const restoreAuth = async () => {
+			const token = cookie.load("token");
+			const userData = cookie.load("userData");
 
-		if (token) {
-			if (userData) {
-				try {
-					const user =
-						typeof userData === "string" ? JSON.parse(userData) : userData;
-					userDispatch({
-						type: USER_ACTIONS.LOGIN,
-						payload: { user, token },
-					});
-				} catch (error) {
-					// Clear invalid data
-					cookie.remove("token", { path: "/" });
-					cookie.remove("userData", { path: "/" });
+			if (token) {
+				if (userData) {
+					try {
+						const user =
+							typeof userData === "string" ? JSON.parse(userData) : userData;
+						userDispatch({
+							type: USER_ACTIONS.LOGIN,
+							payload: { user, token },
+						});
+					} catch (error) {
+						// Clear invalid data
+						cookie.remove("token", { path: "/" });
+						cookie.remove("userData", { path: "/" });
+					}
+				} else {
+					// Token exists but no user data, fetch user profile
+					await getUserProfile();
 				}
-			} else {
-				// Token exists but no user data, fetch user profile
-				getUserProfile();
 			}
-		}
+
+			setIsAuthLoading(false); // Auth restoration complete
+		};
+
+		restoreAuth();
 	}, []);
 
 	// Auth functions
@@ -52,43 +59,44 @@ const AppContextProvider = (props) => {
 			return Promise.reject("User not authenticated");
 		}
 
-		const res = await Apis.get(endpoints["profile"], {
-			headers: {
-				Authorization: `Bearer ${token}`,
-			},
-		})
-			.then((response) => {
-				if (response.status === 200) {
-					const user = response.data;
-					// Store user data in cookies
-					const expires = new Date();
-					expires.setDate(expires.getDate() + 1);
-					cookie.save("userData", JSON.stringify(user), {
-						path: "/",
-						expires,
-					});
+		try {
+			const response = await Apis.get(endpoints["profile"], {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
 
-					userDispatch({
-						type: USER_ACTIONS.LOGIN,
-						payload: { user, token },
-					});
+			if (response.status === 200) {
+				const user = response.data;
+				// Store user data in cookies
+				const expires = new Date();
+				expires.setDate(expires.getDate() + 1);
+				cookie.save("userData", JSON.stringify(user), {
+					path: "/",
+					expires,
+				});
 
-					return {
-						success: true,
-						message: "User profile fetched successfully",
-					};
-				}
-			})
-			.catch((error) => {
-				// Token is invalid, clear it
-				cookie.remove("token", { path: "/" });
-				console.error("Failed to fetch user profile:", error);
+				userDispatch({
+					type: USER_ACTIONS.LOGIN,
+					payload: { user, token },
+				});
 
 				return {
-					success: false,
-					error: "Failed to fetch user profile",
+					success: true,
+					message: "User profile fetched successfully",
 				};
-			});
+			}
+		} catch (error) {
+			// Token is invalid, clear it
+			cookie.remove("token", { path: "/" });
+			cookie.remove("userData", { path: "/" });
+			console.error("Failed to fetch user profile:", error);
+
+			return {
+				success: false,
+				error: "Failed to fetch user profile",
+			};
+		}
 	};
 
 	const login = async (credentials) => {
@@ -203,6 +211,7 @@ const AppContextProvider = (props) => {
 		// User state
 		user: userState.user,
 		isAuthenticated: userState.isAuthenticated,
+		isAuthLoading, // Add auth loading state
 		isLoading,
 		setIsLoading,
 		error,

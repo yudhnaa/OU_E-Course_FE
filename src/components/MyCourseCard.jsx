@@ -129,7 +129,7 @@ const MyCourseCard = ({ course }) => {
 							onClick={(e) => {
 								e.preventDefault();
 								e.stopPropagation();
-								navigate("/course/" + course.id + "/learn");
+								navigate("/course/" + course.id + "/learning");
 							}}
 							variant="primary"
 							size="sm"

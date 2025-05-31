@@ -95,7 +95,7 @@ const CourseDetails = () => {
 
 		if (isAlreadyEnrolled) {
 			// Navigate to course content or player
-			navigate(`/my-enrollments/${courseId}`);
+			navigate(`/course/${courseId}/learning`);
 			return;
 		}
 	};
@@ -466,7 +466,7 @@ const CourseDetails = () => {
 									</Stack>
 
 									{/* Enrollment Button */}
-									{isAlreadyEnrolled ? (
+									{isAlreadyEnrolled && isAlreadyEnrolled ? (
 										<Button
 											onClick={handleEnrollment}
 											variant="success"
@@ -477,7 +477,7 @@ const CourseDetails = () => {
 											}}
 										>
 											<span className="me-2">✓</span>
-											Enrolled - Access Course
+											Learn Now - Enrolled
 										</Button>
 									) : (
 										<div className="mb-4">

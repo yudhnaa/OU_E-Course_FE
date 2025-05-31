@@ -17,7 +17,7 @@ const Navbar = () => {
 
 	return (
 		<div
-			className={`d-flex align-items-center justify-content-between px-4 px-sm-5 px-md-5 px-lg-5 px-xl-6 border-bottom border-dark py-4 ${
+			className={`d-flex align-items-center justify-content-between px-4 px-sm-5 px-md-5 px-lg-5 px-xl-6 border-bottom border-dark py-1 ${
 				isCoursesListPage ? "bg-white" : "bg-info bg-opacity-25"
 			}`}
 		>
@@ -26,7 +26,7 @@ const Navbar = () => {
 				src={assets.logo}
 				alt="Logo"
 				className="cursor-pointer"
-				style={{ width: "112px" }}
+				style={{ width: "75px", height: "75px" }}
 			/>
 			<div className="d-none d-md-flex align-items-center gap-4 text-secondary">
 				<div className="d-flex align-items-center gap-4">

@@ -20,54 +20,58 @@ import ExerciseDetails from "./pages/ExerciseDetails";
 import ExerciseAttempt from "./pages/ExerciseAttempt";
 import TestDetails from "./pages/TestDetails";
 import TestAttempt from "./pages/TestAttempt";
+import CourseLearning from "./pages/CourseLearning";
+import { Container } from "react-bootstrap";
 
 function App() {
 	return (
 		<BrowserRouter>
 			<AppContextProvider>
 				<CartProvider>
-					{/* header */}
-					<Navbar />
+					<div className="app-container">
+						<Navbar />
 
-					<Routes>
-						<Route path="/" element={<Home />} />
+						<Container className="main-content" fluid>
+							<Routes>
+								<Route path="/" element={<Home />} />
 
-						<Route path="/course-list" element={<CoursesList />} />
-						<Route path="/course/:courseId" element={<CourseDetails />} />
-						<Route
-							path="/courses/:courseId/exercises/:exerciseId"
-							element={<ExerciseDetails />}
-						/>
-						<Route
-							path="/courses/:courseId/exercises/:exerciseId/attempt"
-							element={<ExerciseAttempt />}
-						/>
-						<Route
-							path="/courses/:courseId/tests/:testId"
-							element={<TestDetails />}
-						/>
-						<Route
-							path="/courses/:courseId/tests/:testId/attempt"
-							element={<TestAttempt />}
-						/>
-						<Route path="/course/:courseId" element={<CourseDetails />} />
+								<Route path="/course-list" element={<CoursesList />} />
+								<Route path="/my-enrollments" element={<MyEnrollments />} />
 
-						<Route path="/cart" element={<Cart />} />
-						<Route path="/payment-success" element={<PaymentSuccess />} />
+								<Route path="/course/:courseId" element={<CourseDetails />} />
+								<Route
+									path="/course/:courseId/learning"
+									element={<CourseLearning />}
+								/>
+								<Route
+									path="/courses/:courseId/exercises/:exerciseId"
+									element={<ExerciseDetails />}
+								/>
+								<Route
+									path="/courses/:courseId/exercises/:exerciseId/attempt"
+									element={<ExerciseAttempt />}
+								/>
+								<Route
+									path="/courses/:courseId/tests/:testId"
+									element={<TestDetails />}
+								/>
+								<Route
+									path="/courses/:courseId/tests/:testId/attempt"
+									element={<TestAttempt />}
+								/>
 
-						<Route path="/my-enrollments" element={<MyEnrollments />} />
-						<Route path="/profile" element={<ProfilePage />} />
+								<Route path="/cart" element={<Cart />} />
+								<Route path="/payment-success" element={<PaymentSuccess />} />
 
-						<Route path="/login" element={<LogIn />} />
-						<Route path="/signup" element={<SignUp />} />
-						{/* <Route path="/forgot-password" element={<LogIn />} /> */}
+								<Route path="/profile" element={<ProfilePage />} />
+								<Route path="/login" element={<LogIn />} />
+								<Route path="/signup" element={<SignUp />} />
+							</Routes>
+						</Container>
 
-						{/* <Route path="*" element={<Home />} /> */}
-					</Routes>
+						<Footer />
+					</div>
 
-					<Footer />
-
-					{/* Toast Container for notifications */}
 					<ToastContainer
 						position="top-right"
 						autoClose={3000}

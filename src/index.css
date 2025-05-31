@@ -38,12 +38,25 @@
 
 .rich-text li { margin-bottom: 8px; }
 
+/* App.css */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+}
+
 /* Profile Page Specific Styles */
 .profile-page {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   min-height: 100vh;
 }
 
 .profile-header-bg {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   position: relative;
   overflow: hidden;
 }
@@ -196,42 +209,6 @@
   margin-bottom: 8px;
 }
 
-/* Custom Pagination Styles */
-.pagination-separated .page-link {
-  margin: 0 2px;
-  border-radius: 6px;
-  border: 1px solid #dee2e6;
-  color: #6c757d;
-  padding: 8px 12px;
-  transition: all 0.2s ease-in-out;
-}
-
-.pagination-separated .page-item.active .page-link {
-  background-color: #0d6efd;
-  border-color: #0d6efd;
-  color: white;
-  box-shadow: 0 2px 4px rgba(13, 110, 253, 0.25);
-}
-
-.pagination-separated .page-link:hover {
-  background-color: #e9ecef;
-  border-color: #adb5bd;
-  color: #495057;
-  transform: translateY(-1px);
-}
-
-.pagination-separated .page-item.disabled .page-link {
-  color: #adb5bd;
-  pointer-events: none;
-  background-color: transparent;
-  border-color: #dee2e6;
-}
-
-.pagination-separated .page-item:first-child .page-link,
-.pagination-separated .page-item:last-child .page-link {
-  border-radius: 6px;
-}
-
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .profile-page {
@@ -274,4 +251,145 @@
 
 .profile-blob:nth-child(3) {
   animation-delay: 4s;
+}
+
+/* Course Learning Page Styles */
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.lesson-item {
+  transition: all 0.3s ease;
+  border: none;
+  border-left: 3px solid transparent;
+}
+
+.lesson-item:hover {
+  background-color: #f8f9fa;
+  border-left-color: #0d6efd;
+  transform: translateX(2px);
+}
+
+.lesson-item.active {
+  background-color: #e3f2fd;
+  border-left-color: #0d6efd;
+}
+
+.exercise-item {
+  transition: all 0.3s ease;
+  border: none;
+  border-left: 3px solid transparent;
+}
+
+.exercise-item:hover {
+  background-color: #fff8e1;
+  border-left-color: #ffc107;
+}
+
+.test-item {
+  transition: all 0.3s ease;
+  border: none;
+  border-left: 3px solid transparent;
+}
+
+.test-item:hover {
+  background-color: #e8f4fd;
+  border-left-color: #17a2b8;
+}
+
+.tab-content {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.tab-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.tab-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.tab-content::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.tab-content::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Video player responsive styles */
+.ratio-16x9 {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+}
+
+.ratio-16x9 > * {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Enhanced button styles */
+.btn-outline-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(13, 110, 253, 0.2);
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(13, 110, 253, 0.3);
+}
+
+.btn-success:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(25, 135, 84, 0.3);
+}
+
+.btn-warning:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(255, 193, 7, 0.3);
+}
+
+.btn-info:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(23, 162, 184, 0.3);
+}
+
+/* Badge styles */
+.badge {
+  font-weight: 500;
+}
+
+/* Card enhancements */
+.card {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: none;
+  transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive design for course learning */
+@media (max-width: 992px) {
+  .tab-content {
+    max-height: 400px;
+  }
+}
+
+@media (max-width: 768px) {
+  .ratio-16x9 {
+    padding-bottom: 75%; /* More square aspect ratio on mobile */
+  }
+
+  .tab-content {
+    max-height: 300px;
+  }
 }
