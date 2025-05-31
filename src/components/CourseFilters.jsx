@@ -52,15 +52,14 @@ const CourseFilters = ({ filter, updateFilter, onClearFilters }) => {
 	};
 
 	useEffect(() => {
+		// Only trigger search if lecturer has actually been typed by user
+		if (lecturer === "") return;
+
 		const timer = setTimeout(() => {
-			if (lecturer) {
-				updateFilter("lecturer", lecturer);
-			} else {
-				updateFilter("lecturer", "");
-			}
+			updateFilter("lecturer", lecturer);
 		}, 1000);
 		return () => clearTimeout(timer);
-	}, [lecturer]);
+	}, [lecturer, updateFilter]);
 
 	const clearAllFilters = () => {
 		setLecturer("");

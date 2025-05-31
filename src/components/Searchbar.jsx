@@ -19,7 +19,8 @@ const SearchBar = ({ data, searchHandler, setSearch }) => {
 
 	useEffect(() => {
 		// debounce - only trigger on search changes, not initial render
-		if (data.search === undefined || data.search === null) return;
+		if (data.search === undefined || data.search === null || data.search === "")
+			return;
 
 		const handler = setTimeout(() => {
 			if (searchHandler) {
@@ -34,7 +35,7 @@ const SearchBar = ({ data, searchHandler, setSearch }) => {
 		return () => {
 			clearTimeout(handler);
 		};
-	}, [data.search]); // Keep minimal dependencies to avoid unnecessary calls
+	}, [data.search]);
 
 	return (
 		<form

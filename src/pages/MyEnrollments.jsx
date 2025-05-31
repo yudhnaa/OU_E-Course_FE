@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useCallback, useRef } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { assets } from "../assets/assets";
 import { AppContext } from "../contexts/AppContext";
@@ -6,10 +6,11 @@ import SearchBar from "../components/Searchbar";
 import CourseCard from "../components/CourseCard";
 import CourseFilters from "../components/CourseFilters";
 import Pagination from "../components/Pagination";
-import Apis, { endpoints } from "../configs/Apis";
+import Apis, { authApis, endpoints } from "../configs/Apis";
 import { toast } from "react-toastify";
 import { PAGE_SIZE } from "../configs/AppConfig";
 import { arrayToDate } from "../utils/formatUtils";
+import MyCourseCard from "../components/MyCourseCard";
 
 const defaultFilters = {
 	category: {
@@ -38,6 +39,7 @@ const CoursesList = () => {
 		itemsPerPage: PAGE_SIZE,
 	});
 	const { navigate } = useContext(AppContext);
+	const initialLoadRef = useRef(false);
 
 	// sort courses helper function
 	const sortCourses = (courses, sortValue) => {
@@ -68,127 +70,135 @@ const CoursesList = () => {
 				return [...courses];
 		}
 	};
-
-	const getCourses = async (data) => {
-		setLoading(true);
-		try {
-			const params = {
-				search: data.search || "",
-				page: data.page || 1,
-				limit: PAGE_SIZE,
-			};
-			if (data.filter) {
-				if (
-					data.filter.category &&
-					data.filter.category.filterValue !== "all"
-				) {
-					params.category = data.filter.category.filterValue;
-				}
-				if (data.filter.lecturer && data.filter.lecturer.filterValue) {
-					params.lecturer = data.filter.lecturer.filterValue;
-				}
-			}
-
-			const res = await Apis.get(endpoints["courseList"], {
-				params: params,
-			});
-
-			if (res.status === 200) {
-				// Get the courses data
-				let courses = res.data.courses || res.data;
-
-				// Always apply client-side sorting based on current filter
-				const sortValue =
-					data.filter?.sortBy?.filterValue || filter.sortBy.filterValue;
-				if (sortValue) {
-					courses = sortCourses(courses, sortValue);
-				}
-
-				setAllCourses(courses);
-
-				// Update pagination state if API provides pagination info
-				if (res.data.pagination) {
-					setPagination({
-						currentPage: res.data.pagination.currentPage,
-						totalPages: Math.ceil(res.data.pagination.totalItems / PAGE_SIZE),
-						totalItems: res.data.pagination.totalItems,
-						itemsPerPage: pagination.itemsPerPage,
-					});
-				} else {
-					// if APIs that don't provide pagination info
-					const courses = res.data.courses || res.data;
-					setPagination({
-						currentPage: data.page || 1,
-						totalPages: Math.ceil(courses.length / PAGE_SIZE),
-						totalItems: courses.length,
-						itemsPerPage: pagination.itemsPerPage,
-					});
-				}
-
-				return {
-					success: true,
-					message: "Courses fetched successfully",
+	const getCourses = useCallback(
+		async (data) => {
+			setLoading(true);
+			try {
+				const params = {
+					search: data.search || "",
+					page: data.page || 1,
+					limit: PAGE_SIZE,
 				};
-			} else {
+				if (data.filter) {
+					if (
+						data.filter.category &&
+						data.filter.category.filterValue !== "all"
+					) {
+						params.category = data.filter.category.filterValue;
+					}
+					if (data.filter.lecturer && data.filter.lecturer.filterValue) {
+						params.lecturer = data.filter.lecturer.filterValue;
+					}
+				}
+
+				const res = await authApis().get(endpoints["enrolledCourses"], {
+					params: params,
+				});
+
+				if (res.status === 200) {
+					// Get the courses data
+					let courses = res.data.courses;
+					console.log("Courses fetched:", res.data);
+
+					// Always apply client-side sorting based on current filter
+					const sortValue =
+						data.filter?.sortBy?.filterValue || filter.sortBy.filterValue;
+					if (sortValue) {
+						courses = sortCourses(courses, sortValue);
+					}
+
+					setAllCourses(courses);
+
+					// Update pagination state if API provides pagination info
+					if (res.data.pagination) {
+						setPagination({
+							currentPage: res.data.pagination.currentPage,
+							totalPages: Math.ceil(res.data.pagination.totalItems / PAGE_SIZE),
+							totalItems: res.data.pagination.totalItems,
+							itemsPerPage: pagination.itemsPerPage,
+						});
+					} else {
+						// if APIs that don't provide pagination info
+						const courses = res.data.courses || res.data;
+						setPagination({
+							currentPage: data.page || 1,
+							totalPages: Math.ceil(courses.length / PAGE_SIZE),
+							totalItems: courses.length,
+							itemsPerPage: pagination.itemsPerPage,
+						});
+					}
+
+					return {
+						success: true,
+						message: "Courses fetched successfully",
+					};
+				} else {
+					return {
+						success: false,
+						message: "Failed to fetch courses",
+					};
+				}
+			} catch (error) {
+				console.error("Error fetching courses:", error);
 				return {
 					success: false,
-					message: "Failed to fetch courses",
+					message: error.response?.data?.message || "Failed to fetch courses",
 				};
+			} finally {
+				setLoading(false);
 			}
-		} catch (error) {
-			console.error("Error fetching courses:", error);
-			return {
-				success: false,
-				message: error.response?.data?.message || "Failed to fetch courses",
-			};
-		} finally {
-			setLoading(false);
-		}
-	};
-	const handleSearch = async (params) => {
-		const res = await getCourses({
-			search: params.search,
-			filter: params.filter,
-			page: params.page || 1,
-			limit: pagination.itemsPerPage,
-		});
-
-		if (res.success) {
-			// Don't show success toast for normal searches to avoid spam
-			// toast.success(res.message);
-		} else {
-			toast.error(res.message);
-		}
-	};
-	const updateFilter = (filterType, filterValue) => {
-		const newFilter = {
-			...filter,
-			[filterType]: {
-				filterType,
-				filterValue,
-			},
-		};
-		setFilter(newFilter);
-
-		if (filterType === "sortBy") {
-			const sortedCourses = sortCourses(allCourses, filterValue);
-			setAllCourses(sortedCourses);
-		} else {
-			handleSearch({
-				search: search || "",
-				filter: newFilter,
-				page: 1, // Reset to first page when filters change
+		},
+		[filter.sortBy.filterValue, pagination.itemsPerPage]
+	);
+	const handleSearch = useCallback(
+		async (params) => {
+			const res = await getCourses({
+				search: params.search,
+				filter: params.filter,
+				page: params.page || 1,
+				limit: pagination.itemsPerPage,
 			});
-		}
-	};
-	const clearAllFilters = () => {
+
+			if (res.success) {
+				// toast.success(res.message);
+			} else {
+				toast.error(res.message);
+			}
+		},
+		[getCourses, pagination.itemsPerPage]
+	);
+	const updateFilter = useCallback(
+		(filterType, filterValue) => {
+			const newFilter = {
+				...filter,
+				[filterType]: {
+					filterType,
+					filterValue,
+				},
+			};
+			setFilter(newFilter);
+
+			if (filterType === "sortBy") {
+				const sortedCourses = sortCourses(allCourses, filterValue);
+				setAllCourses(sortedCourses);
+			} else {
+				handleSearch({
+					search: search || "",
+					filter: newFilter,
+					page: 1, // Reset to first page when filters change
+				});
+			}
+		},
+		[filter, allCourses, handleSearch, search]
+	);
+	const clearAllFilters = useCallback(() => {
 		setFilter(defaultFilters);
 		handleSearch({
 			search: search || "",
 			filter: defaultFilters,
 			page: 1,
 		});
-	};
+	}, [handleSearch, search]);
 	const handlePageChange = (page) => {
 		handleSearch({
 			search: search || "",
@@ -199,13 +209,17 @@ const CoursesList = () => {
 		window.scrollTo({ top: 0, behavior: "smooth" });
 	};
 	useEffect(() => {
+		// Prevent multiple initial loads
+		if (initialLoadRef.current) return;
+
+		initialLoadRef.current = true;
 		// Load courses when component mounts
 		handleSearch({
 			search: search || "",
 			filter: filter,
 			page: 1,
 		});
-	}, []);
+	}, []); // Empty dependency array is intentional for initial load only
 
 	return (
 		<Container fluid className="px-4 px-md-5 pt-5">
@@ -284,7 +298,7 @@ const CoursesList = () => {
 							<div className="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-4 row-cols-xl-5 g-3">
 								{allCourses.map((course, index) => (
 									<div key={course.id} className="col">
-										<CourseCard course={course} />
+										<MyCourseCard course={course} />
 									</div>
 								))}
 							</div>
