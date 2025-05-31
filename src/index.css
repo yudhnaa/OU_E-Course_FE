@@ -40,12 +40,10 @@
 
 /* Profile Page Specific Styles */
 .profile-page {
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   min-height: 100vh;
 }
 
 .profile-header-bg {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   position: relative;
   overflow: hidden;
 }
@@ -196,6 +194,42 @@
   font-weight: 600;
   color: #495057;
   margin-bottom: 8px;
+}
+
+/* Custom Pagination Styles */
+.pagination-separated .page-link {
+  margin: 0 2px;
+  border-radius: 6px;
+  border: 1px solid #dee2e6;
+  color: #6c757d;
+  padding: 8px 12px;
+  transition: all 0.2s ease-in-out;
+}
+
+.pagination-separated .page-item.active .page-link {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  color: white;
+  box-shadow: 0 2px 4px rgba(13, 110, 253, 0.25);
+}
+
+.pagination-separated .page-link:hover {
+  background-color: #e9ecef;
+  border-color: #adb5bd;
+  color: #495057;
+  transform: translateY(-1px);
+}
+
+.pagination-separated .page-item.disabled .page-link {
+  color: #adb5bd;
+  pointer-events: none;
+  background-color: transparent;
+  border-color: #dee2e6;
+}
+
+.pagination-separated .page-item:first-child .page-link,
+.pagination-separated .page-item:last-child .page-link {
+  border-radius: 6px;
 }
 
 /* Responsive adjustments */

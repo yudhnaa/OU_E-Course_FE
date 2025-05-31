@@ -37,7 +37,7 @@ const Hero = () => {
 					We bring together world-class instructors to help you achieve your
 					professional goals.
 				</p>
-				<SearchBar />
+				{/* <SearchBar /> */}
 			</div>
 		</div>
 	);
