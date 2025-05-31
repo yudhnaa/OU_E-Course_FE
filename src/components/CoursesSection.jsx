@@ -7,7 +7,7 @@ const CoursesSection = () => {
 	// const { allCourses } = useContext(AppContext);
 	const allCourses = [
 		{
-			_id: "course001",
+			_id: "1",
 			courseThumbnail:
 				"https://via.placeholder.com/400x200.png?text=React+Basics",
 			courseTitle: "React Basics for Beginners",
@@ -16,7 +16,7 @@ const CoursesSection = () => {
 			discount: 15,
 		},
 		{
-			_id: "course002",
+			_id: "1",
 			courseThumbnail:
 				"https://via.placeholder.com/400x200.png?text=Advanced+React",
 			courseTitle: "Advanced React Patterns",
@@ -25,7 +25,7 @@ const CoursesSection = () => {
 			discount: 10,
 		},
 		{
-			_id: "course003",
+			_id: "1",
 			courseThumbnail:
 				"https://via.placeholder.com/400x200.png?text=JavaScript+Mastery",
 			courseTitle: "JavaScript Mastery",
@@ -34,7 +34,7 @@ const CoursesSection = () => {
 			discount: 25,
 		},
 		{
-			_id: "course004",
+			_id: "1",
 			courseThumbnail:
 				"https://via.placeholder.com/400x200.png?text=CSS+Fundamentals",
 			courseTitle: "CSS Fundamentals",

@@ -1,4 +1,5 @@
 import axios from "axios";
+import cookie from "react-cookies";
 
 const API_BASE_URL = "http://localhost:8080/Ecourse/api";
 
@@ -8,13 +9,27 @@ export const endpoints = {
 
 	profile: `${API_BASE_URL}/secure/profile`,
 	updateProfile: `${API_BASE_URL}/secure/profile/update`,
+
+	// Course exercises
+	exercises: (courseId) => `${API_BASE_URL}/courses/${courseId}/exercises`,
+	exerciseDetail : (courseId, exerciseId) =>
+		`${API_BASE_URL}/courses/${courseId}/exercises/${exerciseId}`,
+	exerciseAttempt: (courseId, exerciseId) =>
+		`${API_BASE_URL}/secure/courses/${courseId}/exercises/${exerciseId}/attempts`,
+	exerciseQuestions: (courseId, exerciseId) =>
+		`${API_BASE_URL}/courses/${courseId}/exercises/${exerciseId}/questions`,
+	exerciseSubmit: (courseId, exerciseId) =>
+		`${API_BASE_URL}/secure/courses/${courseId}/exercises/${exerciseId}/attempts/add`,
+
+	// Course tests
+	tests: (courseId) => `${API_BASE_URL}/courses/${courseId}/tests`,
 };
 
 export const authApis = () => {
 	return axios.create({
 		baseURL: API_BASE_URL,
 		headers: {
-			Authorization: "`Bearer ${cookie.load('token')}`",
+			Authorization: `Bearer ${cookie.load("token")}`,
 		},
 	});
 };
