@@ -80,9 +80,24 @@ const ExerciseDetails = () => {
 
     const formatDate = (arr) => {
         if (!Array.isArray(arr)) return "";
+    
         const [y, m, d, h, min] = arr;
-        return `${d}/${m}/${y} ${h}:${min.toString().padStart(2, "0")}`;
-    };
+        
+        // Tạo date ở múi giờ UTC
+        const date = new Date(Date.UTC(y, m - 1, d, h, min));
+        
+        // Điều chỉnh sang UTC+7
+        date.setHours(date.getHours() + 7);
+        
+        return date.toLocaleString('vi-VN', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+        });
+    }
 
     return (
         <>
