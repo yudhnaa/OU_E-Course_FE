@@ -60,7 +60,7 @@ const Navbar = () => {
 					</Link>
 
 					<Link
-						to="/privacy-policy"
+						to="/privacy"
 						style={{ textDecoration: "none", color: "inherit" }}
 					>
 						Privacy Policy

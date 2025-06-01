@@ -207,10 +207,10 @@ const ExerciseAttempt = () => {
 
 			toast.success("Quiz submitted successfully!");
 
-			// Redirect sau 3 giây
-			setTimeout(() => {
-				navigate(`/courses/${courseId}/exercises/${exerciseId}`);
-			}, 3000);
+			// // Redirect sau 3 giây
+			// setTimeout(() => {
+			// 	navigate(`/courses/${courseId}/exercises/${exerciseId}`);
+			// }, 3000);
 
 			return response.data;
 		} catch (err) {
@@ -393,7 +393,17 @@ const ExerciseAttempt = () => {
 						))}
 
 						{/* Submit Button */}
-						{!isSubmitted && (
+						{isSubmitted ? (
+							<div className="text-center mt-4">
+								<Button
+									variant="primary"
+									size="lg"
+									onClick={() => navigate(`/course/${courseId}/learning`)}
+								>
+									Back To Learning
+								</Button>
+							</div>
+						) : (
 							<div className="text-center mt-4">
 								<Button
 									variant="primary"

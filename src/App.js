@@ -22,6 +22,9 @@ import TestDetails from "./pages/TestDetails";
 import TestAttempt from "./pages/TestAttempt";
 import CourseLearning from "./pages/CourseLearning";
 import { Container } from "react-bootstrap";
+import AboutUs from "./pages/introduce/aboutUs";
+import ContactUs from "./pages/introduce/contactUs";
+import PrivacyPolicy from "./pages/introduce/privacyPolicy";
 
 function App() {
 	return (
@@ -66,6 +69,11 @@ function App() {
 								<Route path="/profile" element={<ProfilePage />} />
 								<Route path="/login" element={<LogIn />} />
 								<Route path="/signup" element={<SignUp />} />
+
+								{/* Static Pages */}
+								<Route path="/about" element={<AboutUs />} />
+								<Route path="/contact" element={<ContactUs />} />
+								<Route path="/privacy" element={<PrivacyPolicy />} />
 							</Routes>
 						</Container>
 
