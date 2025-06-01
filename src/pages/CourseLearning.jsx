@@ -70,7 +70,7 @@ const formatLessonData = (apiLesson) => {
 				url: att.link,
 				description: att.description,
 			})) || [],
-		isCompleted: false, // Will be set based on user progress
+		isCompleted: apiLesson.isLearned,
 		orderIndex: apiLesson.orderIndex,
 		instructor: `${apiLesson.userUploadIdFirstName} ${apiLesson.userUploadIdLastName}`,
 		countAttachment: apiLesson.countAttachment,
@@ -95,11 +95,6 @@ const CourseLearning = () => {
 		lessons: false,
 		exercises: false,
 		tests: false,
-	});
-	const [progress, setProgress] = useState({
-		completedLessons: [],
-		completedExercises: [],
-		completedTests: [],
 	});
 	const [collapsed, setCollapsed] = useState({
 		lessons: true,
@@ -157,13 +152,6 @@ const CourseLearning = () => {
 				}
 
 				setLoading((prev) => ({ ...prev, course: false }));
-
-				// Set initial progress (this should come from user progress API)
-				setProgress({
-					completedLessons: [],
-					completedExercises: [],
-					completedTests: [],
-				});
 			} catch (error) {
 				console.error("Error loading course data:", error);
 				toast.error("Failed to load course data");
@@ -184,7 +172,15 @@ const CourseLearning = () => {
 					setLoading((prev) => ({ ...prev, lessons: true }));
 
 					const response = await authApis().get(endpoints.lessons(courseId));
+
+					// console.log("lessons:", response.data);
+
 					const formattedLessons = response.data.map(formatLessonData);
+
+					// Sort lessons by orderIndex
+					formattedLessons.sort((a, b) => a.orderIndex - b.orderIndex);
+					// Set lessons state
+					// console.log("Formatted lessons:", formattedLessons);
 
 					setLessons(formattedLessons);
 
@@ -290,16 +286,74 @@ const CourseLearning = () => {
 		setCurrentVideo(lesson);
 	};
 
+	// Refresh lesson data to sync with backend
+	const refreshLessonData = async () => {
+		try {
+			const response = await authApis().get(endpoints.lessons(courseId));
+			const formattedLessons = response.data.map(formatLessonData);
+			formattedLessons.sort((a, b) => a.orderIndex - b.orderIndex);
+			setLessons(formattedLessons);
+
+			// Update current video if it's in the refreshed data
+			if (currentVideo) {
+				const updatedCurrentVideo = formattedLessons.find(lesson => lesson.id === currentVideo.id);
+				if (updatedCurrentVideo) {
+					setCurrentVideo(updatedCurrentVideo);
+				}
+			}
+		} catch (error) {
+			console.error("Error refreshing lesson data:", error);
+		}
+	};
+
 	// Handle lesson completion
-	const handleLessonComplete = (lessonId) => {
-		setProgress((prev) => ({
-			...prev,
-			completedLessons: [
-				...prev.completedLessons.filter((id) => id !== lessonId),
-				lessonId,
-			],
-		}));
-		toast.success("Lesson completed!");
+	const handleLessonComplete = async (lessonId) => {
+		if (!isAuthenticated) {
+			toast.error("You must be logged in to complete lessons");
+			return;
+		}
+		if (!courseData) {
+			toast.error("Course data not loaded yet");
+			return;
+		}
+		if (!lessonId) {
+			toast.error("Invalid lesson ID");
+			return;
+		}
+
+		try {
+			const response = await authApis().post(endpoints.markLessonLearn(courseId, lessonId));
+
+			if (response.status === 200) {
+				// Update the lesson's completion status in the lessons array
+				setLessons((prevLessons) =>
+					prevLessons.map((lesson) =>
+						lesson.id === lessonId
+							? { ...lesson, isCompleted: true }
+							: lesson
+					)
+				);
+
+				// Update current video if it's the one being completed
+				if (currentVideo && currentVideo.id === lessonId) {
+					setCurrentVideo((prevVideo) => ({
+						...prevVideo,
+						isCompleted: true
+					}));
+				}
+
+				toast.success("Lesson marked as learned!");
+
+				// Optionally refresh lesson data to ensure consistency with backend
+				// Uncomment the next line if you want to sync with server after each completion
+				// await refreshLessonData();
+			} else {
+				toast.error("Failed to mark lesson as learned");
+			}
+		} catch (error) {
+			console.error("Error marking lesson as learned:", error);
+			toast.error("Failed to mark lesson as learned");
+		}
 	};
 
 	// Handle navigation panel toggle
@@ -369,7 +423,11 @@ const CourseLearning = () => {
 											<YouTube
 												videoId={currentVideo.videoId}
 												opts={youtubeOpts}
-												onEnd={() => handleLessonComplete(currentVideo.id)}
+												onEnd={() => {
+													if (!currentVideo.isCompleted) {
+														handleLessonComplete(currentVideo.id);
+													}
+												}}
 											/>
 										) : currentVideo.videoType === "drive" ? (
 											<iframe
@@ -425,23 +483,17 @@ const CourseLearning = () => {
 											<p className="mb-0">{currentVideo.description}</p>
 										</div>
 										<Button
-											variant={
-												progress.completedLessons.includes(currentVideo.id)
-													? "success"
-													: "primary"
-											}
+											variant={currentVideo.isCompleted ? "success" : "primary"}
 											onClick={() => handleLessonComplete(currentVideo.id)}
-											disabled={progress.completedLessons.includes(
-												currentVideo.id
-											)}
+											disabled={currentVideo.isCompleted}
 										>
-											{progress.completedLessons.includes(currentVideo.id) ? (
+											{currentVideo.isCompleted ? (
 												<>
 													<FaCheck className="me-2" />
 													Completed
 												</>
 											) : (
-												"Mark as Complete"
+												"Mark as learned"
 											)}
 										</Button>
 									</div>
@@ -570,16 +622,16 @@ const CourseLearning = () => {
 														>
 															<div className="d-flex align-items-start">
 																<div className="me-3 mt-1">
-																	{progress.completedLessons.includes(
-																		lesson.id
-																	) ? (
+																	{lesson.isCompleted ? (
 																		<FaCheck className="text-success" />
 																	) : (
 																		<FaPlay className="text-primary" />
 																	)}
 																</div>
 																<div className="flex-grow-1">
-																	<h6 className="mb-1">{lesson.title}</h6>
+																	<h6 className="mb-1 text-black">
+																		{lesson.title}
+																	</h6>
 																	<p className="mb-1 small text-muted">
 																		{lesson.description}
 																	</p>
@@ -665,9 +717,7 @@ const CourseLearning = () => {
 														>
 															<div className="d-flex align-items-start">
 																<div className="me-3 mt-1">
-																	{progress.completedExercises.includes(
-																		exercise.id
-																	) ? (
+																	{exercise.isCompleted ? (
 																		<FaCheck className="text-success" />
 																	) : (
 																		<FaFileAlt className="text-warning" />
@@ -694,9 +744,7 @@ const CourseLearning = () => {
 																	<div className="d-flex gap-2">
 																		<Button
 																			variant={
-																				progress.completedExercises.includes(
-																					exercise.id
-																				)
+																				exercise.isCompleted
 																					? "outline-primary"
 																					: "primary"
 																			}
@@ -729,7 +777,7 @@ const CourseLearning = () => {
 														<ListGroup.Item key={test.id} className="test-item">
 															<div className="d-flex align-items-start">
 																<div className="me-3 mt-1">
-																	{progress.completedTests.includes(test.id) ? (
+																	{test.isCompleted ? (
 																		<FaCheck className="text-success" />
 																	) : (
 																		<FaClipboardCheck className="text-info" />
@@ -756,9 +804,7 @@ const CourseLearning = () => {
 																	<div className="d-flex gap-2">
 																		<Button
 																			variant={
-																				progress.completedTests.includes(
-																					test.id
-																				)
+																				test.isCompleted
 																					? "outline-info"
 																					: "info"
 																			}

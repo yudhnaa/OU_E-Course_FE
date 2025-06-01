@@ -11,12 +11,20 @@ export const endpoints = {
 	updateProfile: `${API_BASE_URL}/secure/profile`,
 	changePassword: `${API_BASE_URL}/secure/change-password`,
 
+	// Course resources
 	courseList: `${API_BASE_URL}/course-list`,
 	courseDetails: (courseId) => `${API_BASE_URL}/course/${courseId}`,
 	enrolledCourses: `${API_BASE_URL}/secure/enrolled-courses`,
 	isEnrollCourse: (courseId) =>
 		`${API_BASE_URL}/secure/course/${courseId}/is-enrolled-course`,
+	postComment: (courseId) =>
+		`${API_BASE_URL}/secure/course/${courseId}/comment`,
 
+	// course reviews
+	submitReview: (courseId) =>
+		`${API_BASE_URL}/secure/course/${courseId}/review`,
+	updateSubmitReview: (courseId) =>
+		`${API_BASE_URL}/secure/course/${courseId}/review-update`,
 	createPaymentSession: `${API_BASE_URL}/secure/payment/checkout`,
 
 	// Course lessons
@@ -43,6 +51,14 @@ export const endpoints = {
 		`${API_BASE_URL}/secure/courses/${courseId}/tests/${testId}/attempts`,
 	testSubmit: (courseId, testId) =>
 		`${API_BASE_URL}/secure/courses/${courseId}/tests/${testId}/attempts/add`,
+
+	// lessons
+	markLessonLearn: (courseId, lessonId) =>
+		`${API_BASE_URL}/secure/courses/${courseId}/lessons/${lessonId}/mark-learned`,
+
+	// certificates
+	certificates: (courseId) =>
+		`${API_BASE_URL}/secure/certificates/course/${courseId}`,
 };
 
 export const authApis = () => {
