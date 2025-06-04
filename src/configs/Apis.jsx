@@ -1,7 +1,7 @@
 import axios from "axios";
 import cookie from "react-cookies";
 
-const API_BASE_URL = "http://localhost:8080/Ecourse/api";
+const API_BASE_URL = process.env.API_BASE_URL;
 
 export const endpoints = {
 	login: `${API_BASE_URL}/login`,

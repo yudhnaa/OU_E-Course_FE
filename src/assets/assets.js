@@ -97,7 +97,7 @@ export const dummyTestimonial = [
 		image: assets.profile_img_1,
 		rating: 5,
 		feedback:
-			"I've been using Imagify for nearly two years, primarily for Instagram, and it has been incredibly user-friendly, making my work much easier.",
+			"I've been using OU-Ecourse for nearly two years, primarily for Instagram, and it has been incredibly user-friendly, making my work much easier.",
 	},
 	{
 		name: "Richard Nelson",
@@ -105,7 +105,7 @@ export const dummyTestimonial = [
 		image: assets.profile_img_2,
 		rating: 4,
 		feedback:
-			"I've been using Imagify for nearly two years, primarily for Instagram, and it has been incredibly user-friendly, making my work much easier.",
+			"I've been using OU-Ecourse for nearly two years, primarily for Instagram, and it has been incredibly user-friendly, making my work much easier.",
 	},
 	{
 		name: "James Washington",
@@ -113,7 +113,7 @@ export const dummyTestimonial = [
 		image: assets.profile_img_3,
 		rating: 4.5,
 		feedback:
-			"I've been using Imagify for nearly two years, primarily for Instagram, and it has been incredibly user-friendly, making my work much easier.",
+			"I've been using OU-Ecourse for nearly two years, primarily for Instagram, and it has been incredibly user-friendly, making my work much easier.",
 	},
 ];
 
